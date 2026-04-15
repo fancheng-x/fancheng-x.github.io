@@ -1,0 +1,65 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Fancheng Xia",
+    "section": "",
+    "text": "I am a graduate student in MSBA with interests in data analytics, machine learning, and business strategy.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "My Resume",
+    "section": "",
+    "text": "Download PDF file."
+  },
+  {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "My Projects",
+    "section": "",
+    "text": "Analysis of Cars\n\n\n\n\n\n\nFancheng Xia\n\n\nApr 8, 2026\n\n\n\n\n\n\n\n\n\n\n\nMarket Analysis\n\n\n\n\n\n\nFancheng Xia\n\n\nApr 8, 2026\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "projects/project1/index.html",
+    "href": "projects/project1/index.html",
+    "title": "Analysis of Cars",
+    "section": "",
+    "text": "Let’s investigate the relationship between fuel efficiency (mpg) and engine displacement (disp) from the mtcars dataset. Those variables have a correlation of r cor(mtcars$mpg, mtcars$disp) |&gt; format(digits=2).\n\n\nHere is a plot:"
+  },
+  {
+    "objectID": "projects/project1/index.html#sub-header",
+    "href": "projects/project1/index.html#sub-header",
+    "title": "Analysis of Cars",
+    "section": "",
+    "text": "Here is a plot:"
+  },
+  {
+    "objectID": "interests.html",
+    "href": "interests.html",
+    "title": "Interests",
+    "section": "",
+    "text": "I am interested in data analytics, machine learning, business strategy, and consumer behavior."
+  },
+  {
+    "objectID": "interests.html#academic-interests",
+    "href": "interests.html#academic-interests",
+    "title": "Interests",
+    "section": "",
+    "text": "I am interested in data analytics, machine learning, business strategy, and consumer behavior."
+  },
+  {
+    "objectID": "interests.html#professional-goals",
+    "href": "interests.html#professional-goals",
+    "title": "Interests",
+    "section": "Professional Goals",
+    "text": "Professional Goals\nI hope to apply analytics tools to solve practical business problems and support decision-making."
+  },
+  {
+    "objectID": "interests.html#tools-i-use",
+    "href": "interests.html#tools-i-use",
+    "title": "Interests",
+    "section": "Tools I Use",
+    "text": "Tools I Use\n\nQuarto\nR\nPython\nSQL"
+  }
+]

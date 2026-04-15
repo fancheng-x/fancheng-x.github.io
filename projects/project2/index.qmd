@@ -1,0 +1,13 @@
+---
+title: "Market Analysis"
+author: Fancheng Xia
+date: today
+---
+
+## Overview
+
+This project explores trends in market demand and pricing patterns.
+
+## Result
+
+Basic analysis shows clear seasonal patterns.

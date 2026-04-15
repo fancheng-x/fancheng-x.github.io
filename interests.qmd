@@ -1,0 +1,18 @@
+---
+title: "Interests"
+---
+
+## Academic Interests
+
+I am interested in data analytics, machine learning, business strategy, and consumer behavior.
+
+## Professional Goals
+
+I hope to apply analytics tools to solve practical business problems and support decision-making.
+
+## Tools I Use
+
+- Quarto
+- R
+- Python
+- SQL

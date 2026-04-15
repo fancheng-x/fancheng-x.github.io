@@ -1,0 +1,15 @@
+---
+title: "Fancheng Xia"
+image: "files/profile_pic.jpg"
+about:
+  template: jolla
+  links:
+    - icon: envelope
+      href: mailto:your_email@address.com
+    - icon: linkedin
+      href: https://www.linkedin.com/in/fanchengxia/
+---
+
+I am a graduate student in MSBA with interests in data analytics, machine learning, and business strategy.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.

@@ -1,0 +1,48 @@
+/* css styles */
+/* 页面整体 */
+body {
+  background-color: #f8f9fa;   /* 浅灰 */
+  color: #2c3e50;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
+
+/* navbar - 关键修改 */
+.navbar {
+  background-color: #e9eff5 !important;   /* 浅蓝灰 */
+  border-bottom: 1px solid #d0d7de;
+}
+
+/* navbar文字 */
+.navbar a {
+  color: #2c3e50 !important;
+  font-weight: 500;
+}
+
+/* hover效果 */
+.navbar a:hover {
+  color: #0056b3 !important;
+}
+
+/* 标题 */
+h1, h2, h3 {
+  color: #1f2d3d;
+  font-weight: 600;
+}
+
+/* 卡片/内容区（模仿UCSD块状感） */
+.card, .quarto-grid-item {
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  padding: 12px;
+  background-color: white;
+}
+
+/* 搜索/按钮风格 */
+.btn {
+  background-color: #005f86;
+  border: none;
+}
+
+.btn:hover {
+  background-color: #004766;
+}
