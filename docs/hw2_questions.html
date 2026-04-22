@@ -177,6 +177,21 @@ window.Quarto = {
     <a class="nav-link" href="./interests.html"> 
 <span class="menu-text">Interests</span></a>
   </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-homework" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Homework</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-homework">    
+        <li>
+    <a class="dropdown-item" href="./hw1_questions.html">
+ <span class="dropdown-text">HW1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./hw2_questions.html">
+ <span class="dropdown-text">HW2 — Angrist &amp; Lavy (1999)</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -259,7 +274,7 @@ window.Quarto = {
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
 <p>The data cover all Jewish public elementary schools in Israel tested in 1991. The unit of observation is the <strong>class</strong>. Outcomes are average reading (verbal) and math composite scores (scaled 1–100). The key control variable is <code>tipuach</code>, the percent of students from disadvantaged backgrounds (the PD index).</p>
-<div id="c73873b8" class="cell" data-execution_count="1">
+<div id="222a70fc" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -300,7 +315,7 @@ Mean class size:   30.3</code></pre>
 <section id="figure-1b-class-size-by-enrollment-4th-grade" class="level3">
 <h3 class="anchored" data-anchor-id="figure-1b-class-size-by-enrollment-4th-grade">Figure 1b — Class Size by Enrollment (4th Grade)</h3>
 <p>This figure replicates <strong>Figure 1b</strong> from the paper. It plots actual average class size and the Maimonides’ Rule predicted class size against school enrollment. The sawtooth pattern in the dashed line (the rule) and the corresponding drops in actual class size at enrollment multiples of 40 are clearly visible — these discontinuities are the source of identifying variation.</p>
-<div id="bdd5e594" class="cell" data-execution_count="2">
+<div id="21cc1f81" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fig_data <span class="op">=</span> (</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    df.groupby(<span class="st">"c_size"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .agg(actual<span class="op">=</span>(<span class="st">"classize"</span>, <span class="st">"mean"</span>), predicted<span class="op">=</span>(<span class="st">"func1"</span>, <span class="st">"mean"</span>))</span>
@@ -339,7 +354,7 @@ Mean class size:   30.3</code></pre>
 <section id="table-ii-columns-7-10-naive-ols" class="level3">
 <h3 class="anchored" data-anchor-id="table-ii-columns-7-10-naive-ols">Table II (Columns 7 &amp; 10) — Naive OLS</h3>
 <p>Before introducing the instrument, we estimate a simple OLS of test scores on actual class size with <strong>no controls</strong>. Standard errors are clustered by school (<code>schlcode</code>), following Moulton (1986).</p>
-<div id="c008361e" class="cell" data-execution_count="3">
+<div id="1d851be8" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ols_cluster(outcome, regressors, data, cluster):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    cols <span class="op">=</span> [outcome] <span class="op">+</span> regressors <span class="op">+</span> [cluster]</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    d <span class="op">=</span> data[cols].dropna()</span>
@@ -414,7 +429,7 @@ Mean class size:   30.3</code></pre>
 <section id="table-iii-panel-a-columns-7-9-11-reduced-form-rdd" class="level3">
 <h3 class="anchored" data-anchor-id="table-iii-panel-a-columns-7-9-11-reduced-form-rdd">Table III (Panel A, Columns 7, 9, 11) — Reduced-Form RDD</h3>
 <p>Instead of regressing scores on actual class size, we now regress scores on the <strong>Maimonides’ Rule instrument</strong> (<code>func1</code>), controlling for PD (<code>tipuach</code>) and optionally enrollment (<code>c_size</code>). This is the reduced-form of the RDD strategy.</p>
-<div id="34007dd3" class="cell" data-execution_count="4">
+<div id="fc0f4d7e" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m_t3c7  <span class="op">=</span> ols_cluster(<span class="st">"avgverb"</span>, [<span class="st">"func1"</span>, <span class="st">"tipuach"</span>],           df, <span class="st">"schlcode"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>m_t3c9  <span class="op">=</span> ols_cluster(<span class="st">"avgverb"</span>, [<span class="st">"func1"</span>, <span class="st">"tipuach"</span>, <span class="st">"c_size"</span>], df, <span class="st">"schlcode"</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>m_t3c11 <span class="op">=</span> ols_cluster(<span class="st">"avgmath"</span>, [<span class="st">"func1"</span>, <span class="st">"tipuach"</span>],           df, <span class="st">"schlcode"</span>)</span>
@@ -494,7 +509,7 @@ Mean class size:   30.3</code></pre>
 <p>The naive OLS and the reduced-form RDD tell completely opposite stories. This section makes that contrast concrete and explains why the RDD estimate is the credible one.</p>
 <section id="the-sign-flip-in-numbers" class="level3">
 <h3 class="anchored" data-anchor-id="the-sign-flip-in-numbers">The Sign Flip in Numbers</h3>
-<div id="85781c8c" class="cell" data-execution_count="5">
+<div id="4aeca10a" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Method"</span>: [<span class="st">"Naive OLS (Table II)"</span>, <span class="st">"Naive OLS (Table II)"</span>,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                <span class="st">"Reduced-Form RDD (Table III)"</span>, <span class="st">"Reduced-Form RDD (Table III)"</span>],</span>

@@ -13,7 +13,13 @@ website:
       - href: projects.qmd
         text: Projects
       - href: interests.qmd
-        text: Interests     
+        text: Interests
+      - text: Homework
+        menu:
+          - href: hw1_questions.qmd
+            text: "HW1"
+          - href: hw2_questions.qmd
+            text: "HW2 — Angrist & Lavy (1999)"
 
 format:
   html:
@@ -22,6 +28,5 @@ format:
       - brand
     css: styles.css
     toc: true
-
 
 
