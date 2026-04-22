@@ -162,6 +162,8 @@ display(t3)
 
 **Interpretation:** Once we control for PD and use the exogenous variation from Maimonides' Rule, the coefficient on `func1` becomes **negative** for reading scores (−0.085 to −0.089). A larger predicted class size — driven solely by the administrative rule — is associated with lower test scores. The effect on math scores is near zero and insignificant for 4th graders. These point estimates match the paper exactly.
 
+**Note:** Standard errors are clustered by school using HC cluster-robust methods. The original paper applies Moulton (1986) corrections, which may produce slightly different SEs; point estimates are identical.
+
 ---
 
 ## Something Additional — Why Does the Sign Flip? Visualizing Bias vs. Causation
