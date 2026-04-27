@@ -1,5 +1,5 @@
 ---
-title: "Replication of Angrist & Lavy (1999)"
+title: "Partial Replication of Angrist & Lavy (1999): Fourth Grade Evidence"
 subtitle: "Using Maimonides' Rule to Estimate the Effect of Class Size on Scholastic Achievement"
 author: "Fancheng Xia"
 date: today

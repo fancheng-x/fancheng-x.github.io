@@ -3,7 +3,7 @@ title: "A/B Testing a Call to Action"
 subtitle: "Simulating Key Ideas from Classical Frequentist Statistics"
 author: "Fancheng Xia"
 date: today
-jupyter: mgta495
+jupyter: python3
 format:
   html:
     math: true
@@ -113,7 +113,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-At small sample sizes the running estimate is volatile because each additional observation has a large influence on the average. As the sample grows, those fluctuations become smaller and the estimate settles near the true effect of 0.04. 
+At small sample sizes the running estimate is volatile because each additional observation has a large influence on the average. As the sample grows, those fluctuations become smaller and the estimate settles near the true effect of 0.04.
 
 **Why this matters:** In practice, the Law of Large Numbers justifies the need for sufficient sample sizes in A/B tests. If you stop an experiment too early, the estimate might swing wildly due to random noise, leading to a premature (and possibly wrong) conclusion. Waiting for a larger sample makes the decision more reliable.
 
@@ -158,7 +158,7 @@ se_df["Value"] = se_df["Value"].round(5)
 se_df
 ```
 
-The bootstrap standard error (0.01763) is almost identical to the analytical standard error (0.01771), which gives us confidence in the bootstrap approach. 
+The bootstrap standard error (0.01763) is almost identical to the analytical standard error (0.01771), which gives us confidence in the bootstrap approach.
 
 **From a decision-making perspective**, the confidence interval is more informative than the point estimate alone. Here, the 95% CI for $\theta$ is roughly [0.006, 0.076]. Because the entire interval is above zero, we have fairly strong evidence that CTA A outperforms CTA B. However, the lower bound is close to zero, reminding us that the magnitude of the improvement could be modest. In a real business setting, this interval would help stakeholders decide whether the observed lift is both statistically and practically meaningful.
 
@@ -183,7 +183,7 @@ for ax, n in zip(axes.flatten(), sample_sizes):
         A_sim = np.random.binomial(1, pi_A, n)
         B_sim = np.random.binomial(1, pi_B, n)
         theta_vals.append(A_sim.mean() - B_sim.mean())
-    
+
     ax.hist(theta_vals, bins=30, color='steelblue', alpha=0.7, edgecolor='white')
     ax.axvline(theta_true, linestyle="--", linewidth=2, color='firebrick')
     ax.set_title(f"n = {n}")
@@ -195,7 +195,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-When the sample size is small (n = 25), the histogram of $\hat{\theta}$ is irregular and even shows some discreteness. As n increases to 500, the distribution becomes smooth and bell-shaped — exactly what the Central Limit Theorem predicts. 
+When the sample size is small (n = 25), the histogram of $\hat{\theta}$ is irregular and even shows some discreteness. As n increases to 500, the distribution becomes smooth and bell-shaped — exactly what the Central Limit Theorem predicts.
 
 **Why this matters:** The CLT is what allows us to use simple Normal-based confidence intervals and hypothesis tests even when the raw data are just 0s and 1s. Without it, analyzing A/B tests would be far more complicated.
 
@@ -238,7 +238,7 @@ test_df["Value"] = test_df["Value"].round(5)
 test_df
 ```
 
-In this simulation, the estimated effect is 0.038, with a z-statistic of 2.14 and a p-value of 0.032. Since the p-value is below the conventional 0.05 threshold, we reject the null hypothesis. 
+In this simulation, the estimated effect is 0.038, with a z-statistic of 2.14 and a p-value of 0.032. Since the p-value is below the conventional 0.05 threshold, we reject the null hypothesis.
 
 **What this means for the business:** Rejecting $H_0$ suggests that the observed difference is unlikely to be due to random chance alone. From a practical standpoint, this provides statistical justification for concluding that CTA A generates a higher sign-up rate. However, statistical significance does not automatically imply business significance. The estimated lift of 3.8 percentage points might be very valuable for a high-traffic site, but less so for a small one. The decision to implement CTA A permanently should also consider implementation cost and long-term impact.
 
@@ -304,9 +304,9 @@ false_positive_count = 0
 for _ in range(10000):
     A_null = np.random.binomial(1, 0.20, n_total)
     B_null = np.random.binomial(1, 0.20, n_total)
-    
+
     reject_any = False
-    
+
     for n in peek_points:
         theta_peek = A_null[:n].mean() - B_null[:n].mean()
         piA_peek = A_null[:n].mean()
@@ -315,14 +315,14 @@ for _ in range(10000):
             piA_peek * (1 - piA_peek) / n +
             piB_peek * (1 - piB_peek) / n
         )
-        
+
         if se_peek > 0:
             z_peek = theta_peek / se_peek
             p_peek = 2 * (1 - norm.cdf(abs(z_peek)))
             if p_peek < 0.05:
                 reject_any = True
                 break
-    
+
     if reject_any:
         false_positive_count += 1
 
@@ -337,9 +337,6 @@ peek_df["Value"] = peek_df["Value"].round(4)
 peek_df
 ```
 
-A single test at the 5% significance level is designed to have a Type I error rate of 0.05. But once the analyst repeatedly peeks at the accumulating data, the probability of obtaining at least one false positive jumps to around 19% in our simulation. 
+A single test at the 5% significance level is designed to have a Type I error rate of 0.05. But once the analyst repeatedly peeks at the accumulating data, the probability of obtaining at least one false positive jumps to around 19% in our simulation.
 
 **The takeaway for practitioners:** This is why many A/B testing platforms either forbid peeking or require a correction (like sequential testing boundaries). Peeking without adjustment dramatically increases the risk of shipping features that are actually no better than the status quo. If you must monitor experiments continuously, use methods designed for sequential analysis rather than repeatedly applying a fixed-sample test.
-
-
-
