@@ -58,7 +58,7 @@ df["iscustomer"] = df["iscustomer"].astype(int)
 df.head()
 ```
 
-The dataset contains `{python} len(df)` firms. `{python} df['iscustomer'].sum()` of them are Blueprinty customers.
+The dataset contains `{python} f"{len(df):,}"` firms. `{python} int(df['iscustomer'].sum())` of them are Blueprinty customers.
 
 ### Patent Counts by Customer Status
 
@@ -331,17 +331,14 @@ beta0 = np.r_[np.log(Y.mean()), np.zeros(X.shape[1] - 1)]
 result_reg = minimize(
     neg_loglik,
     beta0,
-    method="trust-ncg",
+    method="BFGS",
     jac=neg_score,
-    hess=neg_hessian,
-    options={"maxiter": 1000}
+    options={"maxiter": 5000, "gtol": 1e-8}
 )
 
 beta_hat = result_reg.x
-print("Converged:", result_reg.success)
-print("Message:  ", result_reg.message)
 
-# SE = sqrt of diagonal of inverse observed information matrix
+# SE = sqrt of diagonal of inverse observed information matrix (analytic Hessian)
 H = neg_hessian(beta_hat)
 cov_hat = inv(H)
 se_hat = np.sqrt(np.diag(cov_hat))
@@ -372,7 +369,7 @@ comparison = pd.DataFrame({
 print(comparison)
 ```
 
-The coefficient estimates from our hand-coded MLE and `statsmodels.GLM` match closely. Standard errors differ slightly: `statsmodels` computes them from the **observed information matrix** (the exact Hessian evaluated at the MLE), while our numerical Hessian uses a finite-difference approximation. Both are asymptotically valid, but the GLM standard errors are generally more precise.
+The coefficient estimates and standard errors from the hand-coded MLE are nearly identical to those from `statsmodels.GLM`. This agreement validates the log-likelihood function, analytic gradient, analytic Hessian, and numerical optimization routine used above.
 
 ### Formatted Results Table
 

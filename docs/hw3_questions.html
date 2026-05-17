@@ -289,7 +289,7 @@ window.Quarto = {
 </section>
 <section id="exploring-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="exploring-the-data">Exploring the Data</h2>
-<div id="cabed092" class="cell" data-execution_count="1">
+<div id="d28ada84" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -376,10 +376,10 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<p>The dataset contains 1500 firms. np.int64(481) of them are Blueprinty customers.</p>
+<p>The dataset contains 1,500 firms. 481 of them are Blueprinty customers.</p>
 <section id="patent-counts-by-customer-status" class="level3">
 <h3 class="anchored" data-anchor-id="patent-counts-by-customer-status">Patent Counts by Customer Status</h3>
-<div id="d42d2444" class="cell" data-execution_count="2">
+<div id="5bef0b1e" class="cell" data-execution_count="2">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -392,7 +392,7 @@ window.Quarto = {
 </section>
 <section id="regional-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="regional-distribution">Regional Distribution</h3>
-<div id="86c26000" class="cell" data-execution_count="3">
+<div id="75e4d04a" class="cell" data-execution_count="3">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -401,7 +401,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="ca33add7" class="cell" data-execution_count="4">
+<div id="2ee22cb7" class="cell" data-execution_count="4">
 <div class="cell-output cell-output-display">
 <div>
 
@@ -462,7 +462,7 @@ window.Quarto = {
 </section>
 <section id="firm-age-by-customer-status" class="level3">
 <h3 class="anchored" data-anchor-id="firm-age-by-customer-status">Firm Age by Customer Status</h3>
-<div id="55edb100" class="cell" data-execution_count="5">
+<div id="fa1e9000" class="cell" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -471,7 +471,7 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<div id="098111e0" class="cell" data-execution_count="6">
+<div id="44018560" class="cell" data-execution_count="6">
 <div class="cell-output cell-output-display">
 <div>
 
@@ -542,7 +542,7 @@ L(\lambda \mid \mathbf{Y}) = \prod_{i=1}^n \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i
 </section>
 <section id="coding-the-log-likelihood" class="level3">
 <h3 class="anchored" data-anchor-id="coding-the-log-likelihood">Coding the Log-Likelihood</h3>
-<div id="38f674ab" class="cell" data-execution_count="7">
+<div id="193c1ed4" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln  <span class="co"># log(Y!) = log(Gamma(Y+1))</span></span>
@@ -559,7 +559,7 @@ L(\lambda \mid \mathbf{Y}) = \prod_{i=1}^n \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i
 </section>
 <section id="visualizing-the-log-likelihood" class="level3">
 <h3 class="anchored" data-anchor-id="visualizing-the-log-likelihood">Visualizing the Log-Likelihood</h3>
-<div id="acabc4bd" class="cell" data-execution_count="8">
+<div id="22887232" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lambdas <span class="op">=</span> np.linspace(<span class="fl">0.5</span>, <span class="dv">10</span>, <span class="dv">300</span>)</span>
@@ -589,7 +589,7 @@ L(\lambda \mid \mathbf{Y}) = \prod_{i=1}^n \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i
 </section>
 <section id="numerical-mle-with-scipy.optimize" class="level3">
 <h3 class="anchored" data-anchor-id="numerical-mle-with-scipy.optimize">Numerical MLE with <code>scipy.optimize</code></h3>
-<div id="a486b849" class="cell" data-execution_count="9">
+<div id="530d90f5" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>neg_ll <span class="op">=</span> <span class="kw">lambda</span> lam: <span class="op">-</span>poisson_loglikelihood(lam[<span class="dv">0</span>], Y)</span>
@@ -620,7 +620,7 @@ Y_i \sim \text{Poisson}(\lambda_i), \qquad \lambda_i = \exp(X_i'\beta)
 </section>
 <section id="updating-the-log-likelihood" class="level3">
 <h3 class="anchored" data-anchor-id="updating-the-log-likelihood">Updating the Log-Likelihood</h3>
-<div id="2531ae4a" class="cell" data-execution_count="10">
+<div id="1b34f842" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_regression_loglikelihood(beta, Y, X):</span>
@@ -632,7 +632,7 @@ Y_i \sim \text{Poisson}(\lambda_i), \qquad \lambda_i = \exp(X_i'\beta)
 </section>
 <section id="constructing-the-design-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="constructing-the-design-matrix">Constructing the Design Matrix</h3>
-<div id="d794e84b" class="cell" data-execution_count="11">
+<div id="c02dee97" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One-hot encode region, drop one category to avoid multicollinearity</span></span>
@@ -664,7 +664,7 @@ Shape: (1500, 8)</code></pre>
 </section>
 <section id="finding-the-mle-with-scipy.optimize" class="level3">
 <h3 class="anchored" data-anchor-id="finding-the-mle-with-scipy.optimize">Finding the MLE with <code>scipy.optimize</code></h3>
-<div id="4fe3cdd5" class="cell" data-execution_count="12">
+<div id="c6183212" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
@@ -691,47 +691,42 @@ Shape: (1500, 8)</code></pre>
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>result_reg <span class="op">=</span> minimize(</span>
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    neg_loglik,</span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    beta0,</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">"trust-ncg"</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">"BFGS"</span>,</span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    jac<span class="op">=</span>neg_score,</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    hess<span class="op">=</span>neg_hessian,</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    options<span class="op">=</span>{<span class="st">"maxiter"</span>: <span class="dv">1000</span>}</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="op">=</span> result_reg.x</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Converged:"</span>, result_reg.success)</span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Message:  "</span>, result_reg.message)</span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co"># SE = sqrt of diagonal of inverse observed information matrix</span></span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>H <span class="op">=</span> neg_hessian(beta_hat)</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>cov_hat <span class="op">=</span> inv(H)</span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>se_hat <span class="op">=</span> np.sqrt(np.diag(cov_hat))</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Coefficient"</span>: beta_hat,</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Std. Error"</span>: se_hat,</span>
-<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"z-value"</span>: beta_hat <span class="op">/</span> se_hat</span>
-<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names)</span>
-<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results_df.<span class="bu">round</span>(<span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    options<span class="op">=</span>{<span class="st">"maxiter"</span>: <span class="dv">5000</span>, <span class="st">"gtol"</span>: <span class="fl">1e-8</span>}</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="op">=</span> result_reg.x</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co"># SE = sqrt of diagonal of inverse observed information matrix (analytic Hessian)</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>H <span class="op">=</span> neg_hessian(beta_hat)</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>cov_hat <span class="op">=</span> inv(H)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>se_hat <span class="op">=</span> np.sqrt(np.diag(cov_hat))</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Coefficient"</span>: beta_hat,</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Std. Error"</span>: se_hat,</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"z-value"</span>: beta_hat <span class="op">/</span> se_hat</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results_df.<span class="bu">round</span>(<span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Converged: False
-Message:   A bad approximation caused failure to predict improvement.
-            Coefficient  Std. Error   z-value
-intercept      -0.50871     0.18318  -2.77718
-age             0.14860     0.01387  10.71531
-age_sq         -0.00297     0.00026 -11.51234
-Northeast       0.02916     0.04363   0.66848
-Northwest      -0.01759     0.05378  -0.32698
-South           0.05655     0.05266   1.07383
-Southwest       0.05057     0.04720   1.07151
-iscustomer      0.20759     0.03090   6.71913</code></pre>
+<pre><code>            Coefficient  Std. Error   z-value
+intercept      -0.50892     0.18318  -2.77827
+age             0.14862     0.01387  10.71625
+age_sq         -0.00297     0.00026 -11.51324
+Northeast       0.02917     0.04363   0.66865
+Northwest      -0.01757     0.05378  -0.32678
+South           0.05656     0.05266   1.07404
+Southwest       0.05058     0.04720   1.07157
+iscustomer      0.20759     0.03090   6.71918</code></pre>
 </div>
 </div>
 </section>
 <section id="checking-against-statsmodels" class="level3">
 <h3 class="anchored" data-anchor-id="checking-against-statsmodels">Checking Against <code>statsmodels</code></h3>
-<div id="623478ef" class="cell" data-execution_count="13">
+<div id="9c977ce2" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pass X_df (DataFrame) so glm_result.params has named index</span></span>
@@ -749,21 +744,21 @@ iscustomer      0.20759     0.03090   6.71913</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>            MLE (manual)  GLM (statsmodels)  SE (manual)  SE (GLM)
-intercept       -0.50871           -0.50892      0.18318   0.18318
-age              0.14860            0.14862      0.01387   0.01387
+intercept       -0.50892           -0.50892      0.18318   0.18318
+age              0.14862            0.14862      0.01387   0.01387
 age_sq          -0.00297           -0.00297      0.00026   0.00026
-Northeast        0.02916            0.02917      0.04363   0.04363
-Northwest       -0.01759           -0.01757      0.05378   0.05378
-South            0.05655            0.05656      0.05266   0.05266
-Southwest        0.05057            0.05058      0.04720   0.04720
+Northeast        0.02917            0.02917      0.04363   0.04363
+Northwest       -0.01757           -0.01757      0.05378   0.05378
+South            0.05656            0.05656      0.05266   0.05266
+Southwest        0.05058            0.05058      0.04720   0.04720
 iscustomer       0.20759            0.20759      0.03090   0.03090</code></pre>
 </div>
 </div>
-<p>The coefficient estimates from our hand-coded MLE and <code>statsmodels.GLM</code> match closely. Standard errors differ slightly: <code>statsmodels</code> computes them from the <strong>observed information matrix</strong> (the exact Hessian evaluated at the MLE), while our numerical Hessian uses a finite-difference approximation. Both are asymptotically valid, but the GLM standard errors are generally more precise.</p>
+<p>The coefficient estimates and standard errors from the hand-coded MLE are nearly identical to those from <code>statsmodels.GLM</code>. This agreement validates the log-likelihood function, analytic gradient, analytic Hessian, and numerical optimization routine used above.</p>
 </section>
 <section id="formatted-results-table" class="level3">
 <h3 class="anchored" data-anchor-id="formatted-results-table">Formatted Results Table</h3>
-<div id="ae6f230e" class="cell" data-execution_count="14">
+<div id="cd93aae1" class="cell" data-execution_count="14">
 <div class="cell-output cell-output-display">
 <div>
 
@@ -854,7 +849,7 @@ iscustomer       0.20759            0.20759      0.03090   0.03090</code></pre>
 <section id="interpreting-the-coefficients" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-the-coefficients">Interpreting the Coefficients</h3>
 <p>Because <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>, the Poisson regression coefficients are <strong>log-rate ratios</strong>. A unit increase in a predictor multiplies the expected patent count by <span class="math inline">\(e^\beta\)</span>.</p>
-<div id="ac303308" class="cell" data-execution_count="15">
+<div id="3f5108ba" class="cell" data-execution_count="15">
 <div class="cell-output cell-output-stdout">
 <pre><code>iscustomer coefficient: 0.2076
 Rate ratio exp(β):      1.2307
@@ -881,7 +876,7 @@ p-value:                1.8275e-11</code></pre>
 <li>Predict <span class="math inline">\(\hat{y}_0 = \exp(X_0 \hat\beta)\)</span> and <span class="math inline">\(\hat{y}_1 = \exp(X_1 \hat\beta)\)</span>.</li>
 <li>Report <span class="math inline">\(\frac{1}{n}\sum_i (\hat{y}_{1i} - \hat{y}_{0i})\)</span>.</li>
 </ol>
-<div id="5d06dabb" class="cell" data-execution_count="16">
+<div id="bebb8f4e" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>beta_glm <span class="op">=</span> glm_result.params.to_numpy()</span>
@@ -900,7 +895,7 @@ p-value:                1.8275e-11</code></pre>
 <pre><code>Estimated ATE: 0.7928 additional patents per firm over 5 years</code></pre>
 </div>
 </div>
-<div id="b0302460" class="cell" data-execution_count="17">
+<div id="e348d31b" class="cell" data-execution_count="17">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1438,7 +1433,7 @@ p-value:                1.8275e-11</code></pre>
 <span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>df.head()</span>
 <span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>The dataset contains <span class="in">`{python} len(df)`</span> firms. <span class="in">`{python} df['iscustomer'].sum()`</span> of them are Blueprinty customers.</span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a>The dataset contains <span class="in">`{python} f"{len(df):,}"`</span> firms. <span class="in">`{python} int(df['iscustomer'].sum())`</span> of them are Blueprinty customers.</span>
 <span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a><span class="fu">### Patent Counts by Customer Status</span></span>
 <span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a></span>
@@ -1711,156 +1706,153 @@ p-value:                1.8275e-11</code></pre>
 <span id="cb16-355"><a href="#cb16-355" aria-hidden="true" tabindex="-1"></a>result_reg <span class="op">=</span> minimize(</span>
 <span id="cb16-356"><a href="#cb16-356" aria-hidden="true" tabindex="-1"></a>    neg_loglik,</span>
 <span id="cb16-357"><a href="#cb16-357" aria-hidden="true" tabindex="-1"></a>    beta0,</span>
-<span id="cb16-358"><a href="#cb16-358" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">"trust-ncg"</span>,</span>
+<span id="cb16-358"><a href="#cb16-358" aria-hidden="true" tabindex="-1"></a>    method<span class="op">=</span><span class="st">"BFGS"</span>,</span>
 <span id="cb16-359"><a href="#cb16-359" aria-hidden="true" tabindex="-1"></a>    jac<span class="op">=</span>neg_score,</span>
-<span id="cb16-360"><a href="#cb16-360" aria-hidden="true" tabindex="-1"></a>    hess<span class="op">=</span>neg_hessian,</span>
-<span id="cb16-361"><a href="#cb16-361" aria-hidden="true" tabindex="-1"></a>    options<span class="op">=</span>{<span class="st">"maxiter"</span>: <span class="dv">1000</span>}</span>
-<span id="cb16-362"><a href="#cb16-362" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-363"><a href="#cb16-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-364"><a href="#cb16-364" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="op">=</span> result_reg.x</span>
-<span id="cb16-365"><a href="#cb16-365" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Converged:"</span>, result_reg.success)</span>
-<span id="cb16-366"><a href="#cb16-366" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Message:  "</span>, result_reg.message)</span>
-<span id="cb16-367"><a href="#cb16-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-368"><a href="#cb16-368" aria-hidden="true" tabindex="-1"></a><span class="co"># SE = sqrt of diagonal of inverse observed information matrix</span></span>
-<span id="cb16-369"><a href="#cb16-369" aria-hidden="true" tabindex="-1"></a>H <span class="op">=</span> neg_hessian(beta_hat)</span>
-<span id="cb16-370"><a href="#cb16-370" aria-hidden="true" tabindex="-1"></a>cov_hat <span class="op">=</span> inv(H)</span>
-<span id="cb16-371"><a href="#cb16-371" aria-hidden="true" tabindex="-1"></a>se_hat <span class="op">=</span> np.sqrt(np.diag(cov_hat))</span>
-<span id="cb16-372"><a href="#cb16-372" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-373"><a href="#cb16-373" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb16-374"><a href="#cb16-374" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Coefficient"</span>: beta_hat,</span>
-<span id="cb16-375"><a href="#cb16-375" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Std. Error"</span>: se_hat,</span>
-<span id="cb16-376"><a href="#cb16-376" aria-hidden="true" tabindex="-1"></a>    <span class="st">"z-value"</span>: beta_hat <span class="op">/</span> se_hat</span>
-<span id="cb16-377"><a href="#cb16-377" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names)</span>
+<span id="cb16-360"><a href="#cb16-360" aria-hidden="true" tabindex="-1"></a>    options<span class="op">=</span>{<span class="st">"maxiter"</span>: <span class="dv">5000</span>, <span class="st">"gtol"</span>: <span class="fl">1e-8</span>}</span>
+<span id="cb16-361"><a href="#cb16-361" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-362"><a href="#cb16-362" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-363"><a href="#cb16-363" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="op">=</span> result_reg.x</span>
+<span id="cb16-364"><a href="#cb16-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-365"><a href="#cb16-365" aria-hidden="true" tabindex="-1"></a><span class="co"># SE = sqrt of diagonal of inverse observed information matrix (analytic Hessian)</span></span>
+<span id="cb16-366"><a href="#cb16-366" aria-hidden="true" tabindex="-1"></a>H <span class="op">=</span> neg_hessian(beta_hat)</span>
+<span id="cb16-367"><a href="#cb16-367" aria-hidden="true" tabindex="-1"></a>cov_hat <span class="op">=</span> inv(H)</span>
+<span id="cb16-368"><a href="#cb16-368" aria-hidden="true" tabindex="-1"></a>se_hat <span class="op">=</span> np.sqrt(np.diag(cov_hat))</span>
+<span id="cb16-369"><a href="#cb16-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-370"><a href="#cb16-370" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb16-371"><a href="#cb16-371" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Coefficient"</span>: beta_hat,</span>
+<span id="cb16-372"><a href="#cb16-372" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Std. Error"</span>: se_hat,</span>
+<span id="cb16-373"><a href="#cb16-373" aria-hidden="true" tabindex="-1"></a>    <span class="st">"z-value"</span>: beta_hat <span class="op">/</span> se_hat</span>
+<span id="cb16-374"><a href="#cb16-374" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names)</span>
+<span id="cb16-375"><a href="#cb16-375" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-376"><a href="#cb16-376" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results_df.<span class="bu">round</span>(<span class="dv">5</span>))</span>
+<span id="cb16-377"><a href="#cb16-377" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb16-378"><a href="#cb16-378" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-379"><a href="#cb16-379" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results_df.<span class="bu">round</span>(<span class="dv">5</span>))</span>
-<span id="cb16-380"><a href="#cb16-380" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-381"><a href="#cb16-381" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-382"><a href="#cb16-382" aria-hidden="true" tabindex="-1"></a><span class="fu">### Checking Against `statsmodels`</span></span>
-<span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a><span class="co"># Pass X_df (DataFrame) so glm_result.params has named index</span></span>
-<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a>glm_model <span class="op">=</span> sm.GLM(Y, X_df, family<span class="op">=</span>sm.families.Poisson())</span>
-<span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a>glm_result <span class="op">=</span> glm_model.fit()</span>
-<span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-391"><a href="#cb16-391" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MLE (manual)"</span>: beta_hat,</span>
-<span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GLM (statsmodels)"</span>: glm_result.params.to_numpy(),</span>
-<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SE (manual)"</span>: se_hat,</span>
-<span id="cb16-395"><a href="#cb16-395" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SE (GLM)"</span>: glm_result.bse.to_numpy()</span>
-<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names).<span class="bu">round</span>(<span class="dv">5</span>)</span>
+<span id="cb16-379"><a href="#cb16-379" aria-hidden="true" tabindex="-1"></a><span class="fu">### Checking Against `statsmodels`</span></span>
+<span id="cb16-380"><a href="#cb16-380" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-383"><a href="#cb16-383" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-384"><a href="#cb16-384" aria-hidden="true" tabindex="-1"></a><span class="co"># Pass X_df (DataFrame) so glm_result.params has named index</span></span>
+<span id="cb16-385"><a href="#cb16-385" aria-hidden="true" tabindex="-1"></a>glm_model <span class="op">=</span> sm.GLM(Y, X_df, family<span class="op">=</span>sm.families.Poisson())</span>
+<span id="cb16-386"><a href="#cb16-386" aria-hidden="true" tabindex="-1"></a>glm_result <span class="op">=</span> glm_model.fit()</span>
+<span id="cb16-387"><a href="#cb16-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-388"><a href="#cb16-388" aria-hidden="true" tabindex="-1"></a>comparison <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb16-389"><a href="#cb16-389" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MLE (manual)"</span>: beta_hat,</span>
+<span id="cb16-390"><a href="#cb16-390" aria-hidden="true" tabindex="-1"></a>    <span class="st">"GLM (statsmodels)"</span>: glm_result.params.to_numpy(),</span>
+<span id="cb16-391"><a href="#cb16-391" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SE (manual)"</span>: se_hat,</span>
+<span id="cb16-392"><a href="#cb16-392" aria-hidden="true" tabindex="-1"></a>    <span class="st">"SE (GLM)"</span>: glm_result.bse.to_numpy()</span>
+<span id="cb16-393"><a href="#cb16-393" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names).<span class="bu">round</span>(<span class="dv">5</span>)</span>
+<span id="cb16-394"><a href="#cb16-394" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-395"><a href="#cb16-395" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(comparison)</span>
+<span id="cb16-396"><a href="#cb16-396" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb16-397"><a href="#cb16-397" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(comparison)</span>
-<span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a>The coefficient estimates from our hand-coded MLE and <span class="in">`statsmodels.GLM`</span> match closely. Standard errors differ slightly: <span class="in">`statsmodels`</span> computes them from the **observed information matrix** (the exact Hessian evaluated at the MLE), while our numerical Hessian uses a finite-difference approximation. Both are asymptotically valid, but the GLM standard errors are generally more precise.</span>
-<span id="cb16-402"><a href="#cb16-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-403"><a href="#cb16-403" aria-hidden="true" tabindex="-1"></a><span class="fu">### Formatted Results Table</span></span>
-<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a>glm_summary <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Estimate"</span>: glm_result.params.to_numpy(),</span>
-<span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Std. Error"</span>: glm_result.bse.to_numpy(),</span>
-<span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a>    <span class="st">"z-value"</span>: glm_result.tvalues.to_numpy(),</span>
-<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p-value"</span>: glm_result.pvalues.to_numpy()</span>
-<span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names).<span class="bu">round</span>(<span class="dv">4</span>)</span>
-<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a>label_map <span class="op">=</span> {</span>
-<span id="cb16-417"><a href="#cb16-417" aria-hidden="true" tabindex="-1"></a>    <span class="st">"intercept"</span>: <span class="st">"Intercept"</span>,</span>
-<span id="cb16-418"><a href="#cb16-418" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>: <span class="st">"Firm Age"</span>,</span>
-<span id="cb16-419"><a href="#cb16-419" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_sq"</span>: <span class="st">"Firm Age²"</span>,</span>
-<span id="cb16-420"><a href="#cb16-420" aria-hidden="true" tabindex="-1"></a>    <span class="st">"iscustomer"</span>: <span class="st">"Blueprinty Customer"</span>,</span>
-<span id="cb16-421"><a href="#cb16-421" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> region_dummies.columns:</span>
-<span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a>    label_map[col] <span class="op">=</span> <span class="ss">f"Region: </span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span></span>
-<span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a>glm_summary.index <span class="op">=</span> [label_map.get(c, c) <span class="cf">for</span> c <span class="kw">in</span> glm_summary.index]</span>
-<span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a>glm_summary[<span class="st">"Sig."</span>] <span class="op">=</span> glm_summary[<span class="st">"p-value"</span>].<span class="bu">apply</span>(</span>
-<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> p: <span class="st">"***"</span> <span class="cf">if</span> p <span class="op">&lt;</span> <span class="fl">0.001</span> <span class="cf">else</span> (<span class="st">"**"</span> <span class="cf">if</span> p <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="cf">else</span> (<span class="st">"*"</span> <span class="cf">if</span> p <span class="op">&lt;</span> <span class="fl">0.05</span> <span class="cf">else</span> <span class="st">""</span>))</span>
-<span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-398"><a href="#cb16-398" aria-hidden="true" tabindex="-1"></a>The coefficient estimates and standard errors from the hand-coded MLE are nearly identical to those from <span class="in">`statsmodels.GLM`</span>. This agreement validates the log-likelihood function, analytic gradient, analytic Hessian, and numerical optimization routine used above.</span>
+<span id="cb16-399"><a href="#cb16-399" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-400"><a href="#cb16-400" aria-hidden="true" tabindex="-1"></a><span class="fu">### Formatted Results Table</span></span>
+<span id="cb16-401"><a href="#cb16-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-404"><a href="#cb16-404" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-405"><a href="#cb16-405" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb16-406"><a href="#cb16-406" aria-hidden="true" tabindex="-1"></a>glm_summary <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb16-407"><a href="#cb16-407" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Estimate"</span>: glm_result.params.to_numpy(),</span>
+<span id="cb16-408"><a href="#cb16-408" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Std. Error"</span>: glm_result.bse.to_numpy(),</span>
+<span id="cb16-409"><a href="#cb16-409" aria-hidden="true" tabindex="-1"></a>    <span class="st">"z-value"</span>: glm_result.tvalues.to_numpy(),</span>
+<span id="cb16-410"><a href="#cb16-410" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p-value"</span>: glm_result.pvalues.to_numpy()</span>
+<span id="cb16-411"><a href="#cb16-411" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>feature_names).<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb16-412"><a href="#cb16-412" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-413"><a href="#cb16-413" aria-hidden="true" tabindex="-1"></a>label_map <span class="op">=</span> {</span>
+<span id="cb16-414"><a href="#cb16-414" aria-hidden="true" tabindex="-1"></a>    <span class="st">"intercept"</span>: <span class="st">"Intercept"</span>,</span>
+<span id="cb16-415"><a href="#cb16-415" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age"</span>: <span class="st">"Firm Age"</span>,</span>
+<span id="cb16-416"><a href="#cb16-416" aria-hidden="true" tabindex="-1"></a>    <span class="st">"age_sq"</span>: <span class="st">"Firm Age²"</span>,</span>
+<span id="cb16-417"><a href="#cb16-417" aria-hidden="true" tabindex="-1"></a>    <span class="st">"iscustomer"</span>: <span class="st">"Blueprinty Customer"</span>,</span>
+<span id="cb16-418"><a href="#cb16-418" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-419"><a href="#cb16-419" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> region_dummies.columns:</span>
+<span id="cb16-420"><a href="#cb16-420" aria-hidden="true" tabindex="-1"></a>    label_map[col] <span class="op">=</span> <span class="ss">f"Region: </span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb16-421"><a href="#cb16-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-422"><a href="#cb16-422" aria-hidden="true" tabindex="-1"></a>glm_summary.index <span class="op">=</span> [label_map.get(c, c) <span class="cf">for</span> c <span class="kw">in</span> glm_summary.index]</span>
+<span id="cb16-423"><a href="#cb16-423" aria-hidden="true" tabindex="-1"></a>glm_summary[<span class="st">"Sig."</span>] <span class="op">=</span> glm_summary[<span class="st">"p-value"</span>].<span class="bu">apply</span>(</span>
+<span id="cb16-424"><a href="#cb16-424" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> p: <span class="st">"***"</span> <span class="cf">if</span> p <span class="op">&lt;</span> <span class="fl">0.001</span> <span class="cf">else</span> (<span class="st">"**"</span> <span class="cf">if</span> p <span class="op">&lt;</span> <span class="fl">0.01</span> <span class="cf">else</span> (<span class="st">"*"</span> <span class="cf">if</span> p <span class="op">&lt;</span> <span class="fl">0.05</span> <span class="cf">else</span> <span class="st">""</span>))</span>
+<span id="cb16-425"><a href="#cb16-425" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-426"><a href="#cb16-426" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-427"><a href="#cb16-427" aria-hidden="true" tabindex="-1"></a>display(glm_summary)</span>
+<span id="cb16-428"><a href="#cb16-428" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb16-429"><a href="#cb16-429" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a>display(glm_summary)</span>
-<span id="cb16-431"><a href="#cb16-431" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-432"><a href="#cb16-432" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-433"><a href="#cb16-433" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpreting the Coefficients</span></span>
-<span id="cb16-434"><a href="#cb16-434" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-435"><a href="#cb16-435" aria-hidden="true" tabindex="-1"></a>Because $\lambda_i = \exp(X_i'\beta)$, the Poisson regression coefficients are **log-rate ratios**. A unit increase in a predictor multiplies the expected patent count by $e^\beta$.</span>
-<span id="cb16-436"><a href="#cb16-436" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-439"><a href="#cb16-439" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb16-440"><a href="#cb16-440" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb16-441"><a href="#cb16-441" aria-hidden="true" tabindex="-1"></a>coef_cust <span class="op">=</span> glm_result.params[<span class="st">"iscustomer"</span>]</span>
-<span id="cb16-442"><a href="#cb16-442" aria-hidden="true" tabindex="-1"></a>rate_ratio <span class="op">=</span> np.exp(coef_cust)</span>
-<span id="cb16-443"><a href="#cb16-443" aria-hidden="true" tabindex="-1"></a>pct_change <span class="op">=</span> (rate_ratio <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb16-444"><a href="#cb16-444" aria-hidden="true" tabindex="-1"></a>pval_cust  <span class="op">=</span> glm_result.pvalues[<span class="st">"iscustomer"</span>]</span>
-<span id="cb16-445"><a href="#cb16-445" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"iscustomer coefficient: </span><span class="sc">{</span>coef_cust<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb16-446"><a href="#cb16-446" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rate ratio exp(β):      </span><span class="sc">{</span>rate_ratio<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb16-447"><a href="#cb16-447" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Percentage change:      </span><span class="sc">{</span>pct_change<span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
-<span id="cb16-448"><a href="#cb16-448" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-value:                </span><span class="sc">{</span>pval_cust<span class="sc">:.4e}</span><span class="ss">"</span>)</span>
-<span id="cb16-449"><a href="#cb16-449" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-450"><a href="#cb16-450" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-451"><a href="#cb16-451" aria-hidden="true" tabindex="-1"></a>**Key takeaways:**</span>
-<span id="cb16-452"><a href="#cb16-452" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-453"><a href="#cb16-453" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Blueprinty Customer**: the coefficient is positive and statistically significant (p &lt; 0.001). Exponentiating it gives a rate ratio of roughly 1.23, meaning that — after controlling for age and region — Blueprinty customers have about **23% more** expected patents than otherwise comparable non-customers.</span>
-<span id="cb16-454"><a href="#cb16-454" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-455"><a href="#cb16-455" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Firm Age** has a positive coefficient and **Age²** has a negative coefficient, tracing an inverted-U relationship: patent output rises with age up to a point, then flattens or declines as older firms may shift priorities away from R&amp;D.</span>
-<span id="cb16-456"><a href="#cb16-456" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-457"><a href="#cb16-457" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Regional dummies** capture differences in patent productivity across geographies, holding other factors constant.</span>
-<span id="cb16-458"><a href="#cb16-458" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-459"><a href="#cb16-459" aria-hidden="true" tabindex="-1"></a>---</span>
-<span id="cb16-460"><a href="#cb16-460" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-461"><a href="#cb16-461" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Effect of Blueprinty's Software</span></span>
-<span id="cb16-462"><a href="#cb16-462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-463"><a href="#cb16-463" aria-hidden="true" tabindex="-1"></a>The coefficient on <span class="in">`iscustomer`</span> tells us the *multiplicative* change in the expected patent rate. But it's more useful to report the estimated effect in **patent counts** — a quantity that non-technical stakeholders can immediately understand.</span>
-<span id="cb16-464"><a href="#cb16-464" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a>We use the **Average Treatment Effect (ATE)** via counterfactual prediction:</span>
-<span id="cb16-466"><a href="#cb16-466" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-467"><a href="#cb16-467" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Create $X_0$: set <span class="in">`iscustomer = 0`</span> for every firm.</span>
-<span id="cb16-468"><a href="#cb16-468" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Create $X_1$: set <span class="in">`iscustomer = 1`</span> for every firm.</span>
-<span id="cb16-469"><a href="#cb16-469" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Predict $\hat{y}_0 = \exp(X_0 \hat\beta)$ and $\hat{y}_1 = \exp(X_1 \hat\beta)$.</span>
-<span id="cb16-470"><a href="#cb16-470" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Report $\frac{1}{n}\sum_i (\hat{y}_{1i} - \hat{y}_{0i})$.</span>
-<span id="cb16-471"><a href="#cb16-471" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-474"><a href="#cb16-474" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb16-475"><a href="#cb16-475" aria-hidden="true" tabindex="-1"></a>beta_glm <span class="op">=</span> glm_result.params.to_numpy()</span>
-<span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a>cust_col <span class="op">=</span> feature_names.index(<span class="st">"iscustomer"</span>)</span>
-<span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a>X0 <span class="op">=</span> X.copy()<span class="op">;</span> X0[:, cust_col] <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>X1 <span class="op">=</span> X.copy()<span class="op">;</span> X1[:, cust_col] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb16-430"><a href="#cb16-430" aria-hidden="true" tabindex="-1"></a><span class="fu">### Interpreting the Coefficients</span></span>
+<span id="cb16-431"><a href="#cb16-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-432"><a href="#cb16-432" aria-hidden="true" tabindex="-1"></a>Because $\lambda_i = \exp(X_i'\beta)$, the Poisson regression coefficients are **log-rate ratios**. A unit increase in a predictor multiplies the expected patent count by $e^\beta$.</span>
+<span id="cb16-433"><a href="#cb16-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-436"><a href="#cb16-436" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-437"><a href="#cb16-437" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb16-438"><a href="#cb16-438" aria-hidden="true" tabindex="-1"></a>coef_cust <span class="op">=</span> glm_result.params[<span class="st">"iscustomer"</span>]</span>
+<span id="cb16-439"><a href="#cb16-439" aria-hidden="true" tabindex="-1"></a>rate_ratio <span class="op">=</span> np.exp(coef_cust)</span>
+<span id="cb16-440"><a href="#cb16-440" aria-hidden="true" tabindex="-1"></a>pct_change <span class="op">=</span> (rate_ratio <span class="op">-</span> <span class="dv">1</span>) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb16-441"><a href="#cb16-441" aria-hidden="true" tabindex="-1"></a>pval_cust  <span class="op">=</span> glm_result.pvalues[<span class="st">"iscustomer"</span>]</span>
+<span id="cb16-442"><a href="#cb16-442" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"iscustomer coefficient: </span><span class="sc">{</span>coef_cust<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb16-443"><a href="#cb16-443" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Rate ratio exp(β):      </span><span class="sc">{</span>rate_ratio<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb16-444"><a href="#cb16-444" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Percentage change:      </span><span class="sc">{</span>pct_change<span class="sc">:.1f}</span><span class="ss">%"</span>)</span>
+<span id="cb16-445"><a href="#cb16-445" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"p-value:                </span><span class="sc">{</span>pval_cust<span class="sc">:.4e}</span><span class="ss">"</span>)</span>
+<span id="cb16-446"><a href="#cb16-446" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-447"><a href="#cb16-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-448"><a href="#cb16-448" aria-hidden="true" tabindex="-1"></a>**Key takeaways:**</span>
+<span id="cb16-449"><a href="#cb16-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-450"><a href="#cb16-450" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Blueprinty Customer**: the coefficient is positive and statistically significant (p &lt; 0.001). Exponentiating it gives a rate ratio of roughly 1.23, meaning that — after controlling for age and region — Blueprinty customers have about **23% more** expected patents than otherwise comparable non-customers.</span>
+<span id="cb16-451"><a href="#cb16-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-452"><a href="#cb16-452" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Firm Age** has a positive coefficient and **Age²** has a negative coefficient, tracing an inverted-U relationship: patent output rises with age up to a point, then flattens or declines as older firms may shift priorities away from R&amp;D.</span>
+<span id="cb16-453"><a href="#cb16-453" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-454"><a href="#cb16-454" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Regional dummies** capture differences in patent productivity across geographies, holding other factors constant.</span>
+<span id="cb16-455"><a href="#cb16-455" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-456"><a href="#cb16-456" aria-hidden="true" tabindex="-1"></a>---</span>
+<span id="cb16-457"><a href="#cb16-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-458"><a href="#cb16-458" aria-hidden="true" tabindex="-1"></a><span class="fu">## The Effect of Blueprinty's Software</span></span>
+<span id="cb16-459"><a href="#cb16-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-460"><a href="#cb16-460" aria-hidden="true" tabindex="-1"></a>The coefficient on <span class="in">`iscustomer`</span> tells us the *multiplicative* change in the expected patent rate. But it's more useful to report the estimated effect in **patent counts** — a quantity that non-technical stakeholders can immediately understand.</span>
+<span id="cb16-461"><a href="#cb16-461" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-462"><a href="#cb16-462" aria-hidden="true" tabindex="-1"></a>We use the **Average Treatment Effect (ATE)** via counterfactual prediction:</span>
+<span id="cb16-463"><a href="#cb16-463" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-464"><a href="#cb16-464" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Create $X_0$: set <span class="in">`iscustomer = 0`</span> for every firm.</span>
+<span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Create $X_1$: set <span class="in">`iscustomer = 1`</span> for every firm.</span>
+<span id="cb16-466"><a href="#cb16-466" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Predict $\hat{y}_0 = \exp(X_0 \hat\beta)$ and $\hat{y}_1 = \exp(X_1 \hat\beta)$.</span>
+<span id="cb16-467"><a href="#cb16-467" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Report $\frac{1}{n}\sum_i (\hat{y}_{1i} - \hat{y}_{0i})$.</span>
+<span id="cb16-468"><a href="#cb16-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-471"><a href="#cb16-471" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-472"><a href="#cb16-472" aria-hidden="true" tabindex="-1"></a>beta_glm <span class="op">=</span> glm_result.params.to_numpy()</span>
+<span id="cb16-473"><a href="#cb16-473" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-474"><a href="#cb16-474" aria-hidden="true" tabindex="-1"></a>cust_col <span class="op">=</span> feature_names.index(<span class="st">"iscustomer"</span>)</span>
+<span id="cb16-475"><a href="#cb16-475" aria-hidden="true" tabindex="-1"></a>X0 <span class="op">=</span> X.copy()<span class="op">;</span> X0[:, cust_col] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb16-476"><a href="#cb16-476" aria-hidden="true" tabindex="-1"></a>X1 <span class="op">=</span> X.copy()<span class="op">;</span> X1[:, cust_col] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb16-477"><a href="#cb16-477" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-478"><a href="#cb16-478" aria-hidden="true" tabindex="-1"></a>y_hat_0 <span class="op">=</span> np.exp(X0 <span class="op">@</span> beta_glm)</span>
+<span id="cb16-479"><a href="#cb16-479" aria-hidden="true" tabindex="-1"></a>y_hat_1 <span class="op">=</span> np.exp(X1 <span class="op">@</span> beta_glm)</span>
 <span id="cb16-480"><a href="#cb16-480" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a>y_hat_0 <span class="op">=</span> np.exp(X0 <span class="op">@</span> beta_glm)</span>
-<span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a>y_hat_1 <span class="op">=</span> np.exp(X1 <span class="op">@</span> beta_glm)</span>
-<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a>ate <span class="op">=</span> np.mean(y_hat_1 <span class="op">-</span> y_hat_0)</span>
-<span id="cb16-485"><a href="#cb16-485" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estimated ATE: </span><span class="sc">{</span>ate<span class="sc">:.4f}</span><span class="ss"> additional patents per firm over 5 years"</span>)</span>
-<span id="cb16-486"><a href="#cb16-486" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a>diff <span class="op">=</span> y_hat_1 <span class="op">-</span> y_hat_0</span>
-<span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
-<span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a>ax.hist(diff, bins<span class="op">=</span><span class="dv">35</span>, color<span class="op">=</span>BLUE, edgecolor<span class="op">=</span><span class="st">"white"</span>, linewidth<span class="op">=</span><span class="fl">0.6</span>, alpha<span class="op">=</span><span class="fl">0.85</span>)</span>
-<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a>ax.axvline(ate, color<span class="op">=</span><span class="st">"crimson"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
-<span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Mean effect = </span><span class="sc">{</span>ate<span class="sc">:.3f}</span><span class="ss"> patents"</span>)</span>
-<span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Predicted Additional Patents (Customer vs. Non-Customer)"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Number of Firms"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
-<span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Distribution of Firm-Level Counterfactual Effects"</span>, fontsize<span class="op">=</span><span class="dv">13</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
-<span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">11</span>)</span>
-<span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb16-503"><a href="#cb16-503" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"ate_hist.png"</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">"tight"</span>)</span>
-<span id="cb16-504"><a href="#cb16-504" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb16-505"><a href="#cb16-505" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb16-506"><a href="#cb16-506" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-507"><a href="#cb16-507" aria-hidden="true" tabindex="-1"></a>After holding firm age and regional location constant, switching a firm from non-customer to customer status is associated with an average of **`{python} f"{ate:.3f}"` additional patents over a five-year window**. Given a typical baseline of around 3–4 patents per firm, this represents a meaningful relative increase.</span>
-<span id="cb16-508"><a href="#cb16-508" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-509"><a href="#cb16-509" aria-hidden="true" tabindex="-1"></a><span class="fu">### What This Analysis Does — and Doesn't — Establish</span></span>
-<span id="cb16-510"><a href="#cb16-510" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-511"><a href="#cb16-511" aria-hidden="true" tabindex="-1"></a>This result is consistent with Blueprinty's marketing claim, and the association survives controls for two important confounders (age and region). However, a few important caveats apply:</span>
-<span id="cb16-512"><a href="#cb16-512" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-513"><a href="#cb16-513" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Observational, not experimental**: firms were not randomly assigned to use Blueprinty's software. Firms that chose to adopt it may differ from non-adopters in ways we cannot fully measure — internal R&amp;D culture, management quality, or patent strategy.</span>
-<span id="cb16-514"><a href="#cb16-514" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**No pre-treatment baseline**: ideally we would observe each firm's patent rate *before* and *after* adopting the software. The cross-sectional data here cannot rule out that high-patenting firms were simply more likely to become customers in the first place.</span>
-<span id="cb16-515"><a href="#cb16-515" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Omitted variables**: the model controls for age and region but not for firm size, R&amp;D spending, or industry sub-sector, all of which could confound the relationship.</span>
-<span id="cb16-516"><a href="#cb16-516" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-517"><a href="#cb16-517" aria-hidden="true" tabindex="-1"></a>In short: the analysis provides credible *correlational* evidence in support of Blueprinty's claim, but **a randomized experiment or a difference-in-differences design with panel data would be needed to make a causal claim**.</span>
+<span id="cb16-481"><a href="#cb16-481" aria-hidden="true" tabindex="-1"></a>ate <span class="op">=</span> np.mean(y_hat_1 <span class="op">-</span> y_hat_0)</span>
+<span id="cb16-482"><a href="#cb16-482" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Estimated ATE: </span><span class="sc">{</span>ate<span class="sc">:.4f}</span><span class="ss"> additional patents per firm over 5 years"</span>)</span>
+<span id="cb16-483"><a href="#cb16-483" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-484"><a href="#cb16-484" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-487"><a href="#cb16-487" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
+<span id="cb16-488"><a href="#cb16-488" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb16-489"><a href="#cb16-489" aria-hidden="true" tabindex="-1"></a>diff <span class="op">=</span> y_hat_1 <span class="op">-</span> y_hat_0</span>
+<span id="cb16-490"><a href="#cb16-490" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-491"><a href="#cb16-491" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">8</span>, <span class="fl">4.5</span>))</span>
+<span id="cb16-492"><a href="#cb16-492" aria-hidden="true" tabindex="-1"></a>ax.hist(diff, bins<span class="op">=</span><span class="dv">35</span>, color<span class="op">=</span>BLUE, edgecolor<span class="op">=</span><span class="st">"white"</span>, linewidth<span class="op">=</span><span class="fl">0.6</span>, alpha<span class="op">=</span><span class="fl">0.85</span>)</span>
+<span id="cb16-493"><a href="#cb16-493" aria-hidden="true" tabindex="-1"></a>ax.axvline(ate, color<span class="op">=</span><span class="st">"crimson"</span>, linestyle<span class="op">=</span><span class="st">"--"</span>, linewidth<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb16-494"><a href="#cb16-494" aria-hidden="true" tabindex="-1"></a>           label<span class="op">=</span><span class="ss">f"Mean effect = </span><span class="sc">{</span>ate<span class="sc">:.3f}</span><span class="ss"> patents"</span>)</span>
+<span id="cb16-495"><a href="#cb16-495" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"Predicted Additional Patents (Customer vs. Non-Customer)"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb16-496"><a href="#cb16-496" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">"Number of Firms"</span>, fontsize<span class="op">=</span><span class="dv">12</span>)</span>
+<span id="cb16-497"><a href="#cb16-497" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Distribution of Firm-Level Counterfactual Effects"</span>, fontsize<span class="op">=</span><span class="dv">13</span>, fontweight<span class="op">=</span><span class="st">"bold"</span>)</span>
+<span id="cb16-498"><a href="#cb16-498" aria-hidden="true" tabindex="-1"></a>ax.legend(fontsize<span class="op">=</span><span class="dv">11</span>)</span>
+<span id="cb16-499"><a href="#cb16-499" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb16-500"><a href="#cb16-500" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"ate_hist.png"</span>, dpi<span class="op">=</span><span class="dv">150</span>, bbox_inches<span class="op">=</span><span class="st">"tight"</span>)</span>
+<span id="cb16-501"><a href="#cb16-501" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb16-502"><a href="#cb16-502" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb16-503"><a href="#cb16-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-504"><a href="#cb16-504" aria-hidden="true" tabindex="-1"></a>After holding firm age and regional location constant, switching a firm from non-customer to customer status is associated with an average of **`{python} f"{ate:.3f}"` additional patents over a five-year window**. Given a typical baseline of around 3–4 patents per firm, this represents a meaningful relative increase.</span>
+<span id="cb16-505"><a href="#cb16-505" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-506"><a href="#cb16-506" aria-hidden="true" tabindex="-1"></a><span class="fu">### What This Analysis Does — and Doesn't — Establish</span></span>
+<span id="cb16-507"><a href="#cb16-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-508"><a href="#cb16-508" aria-hidden="true" tabindex="-1"></a>This result is consistent with Blueprinty's marketing claim, and the association survives controls for two important confounders (age and region). However, a few important caveats apply:</span>
+<span id="cb16-509"><a href="#cb16-509" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-510"><a href="#cb16-510" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Observational, not experimental**: firms were not randomly assigned to use Blueprinty's software. Firms that chose to adopt it may differ from non-adopters in ways we cannot fully measure — internal R&amp;D culture, management quality, or patent strategy.</span>
+<span id="cb16-511"><a href="#cb16-511" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**No pre-treatment baseline**: ideally we would observe each firm's patent rate *before* and *after* adopting the software. The cross-sectional data here cannot rule out that high-patenting firms were simply more likely to become customers in the first place.</span>
+<span id="cb16-512"><a href="#cb16-512" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Omitted variables**: the model controls for age and region but not for firm size, R&amp;D spending, or industry sub-sector, all of which could confound the relationship.</span>
+<span id="cb16-513"><a href="#cb16-513" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-514"><a href="#cb16-514" aria-hidden="true" tabindex="-1"></a>In short: the analysis provides credible *correlational* evidence in support of Blueprinty's claim, but **a randomized experiment or a difference-in-differences design with panel data would be needed to make a causal claim**.</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
