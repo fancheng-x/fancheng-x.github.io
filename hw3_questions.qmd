@@ -1,0 +1,483 @@
+---
+title: "Does Blueprinty's Software Help Engineers Win More Patents?"
+subtitle: "A Poisson Regression Analysis via Maximum Likelihood Estimation"
+author: "Fancheng"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-tools: true
+    theme: cosmo
+    highlight-style: github
+execute:
+  warning: false
+  message: false
+---
+
+## Introduction
+
+Blueprinty is a small software company that builds tools specifically for preparing and submitting patent applications to the US Patent and Trademark Office. Their marketing team wants to make a bold claim: engineering firms that use Blueprinty's software are more likely to get their patents approved.
+
+On the surface, this sounds like a question you could answer by simply comparing patent counts between customers and non-customers. But it isn't that simple. Blueprinty's customers are not chosen at random — firms that actively seek out specialized patent software are probably already more sophisticated, better resourced, or operating in regions with stronger innovation ecosystems. Any raw difference in patent counts between the two groups could easily reflect these pre-existing advantages rather than any effect of the software itself.
+
+To study this more carefully, Blueprinty has shared data on **1,500 mature engineering firms**, each with information on the number of patents they received over the last five years, their regional location, their age since incorporation, and whether they are a Blueprinty customer. Because the outcome is a count (non-negative integers), we model it using **Poisson regression**, estimated via **Maximum Likelihood Estimation (MLE)**. This lets us hold age and region constant while estimating the association between software use and patent counts — a more credible comparison than looking at raw group means alone.
+
+---
+
+## Exploring the Data
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import seaborn as sns
+from scipy import optimize
+import statsmodels.api as sm
+from IPython.display import display
+import warnings
+warnings.filterwarnings("ignore")
+
+# style
+plt.rcParams.update({
+    "font.family": "sans-serif",
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "axes.grid": True,
+    "grid.alpha": 0.3,
+    "grid.linestyle": "--"
+})
+
+BLUE = "#2563EB"
+ORANGE = "#F59E0B"
+
+df = pd.read_csv("files/blueprinty.csv")
+df["iscustomer"] = df["iscustomer"].astype(int)
+df.head()
+```
+
+The dataset contains `{python} len(df)` firms. `{python} df['iscustomer'].sum()` of them are Blueprinty customers.
+
+### Patent Counts by Customer Status
+
+```{python}
+#| echo: false
+cust = df[df["iscustomer"] == 1]["patents"]
+non_cust = df[df["iscustomer"] == 0]["patents"]
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)
+
+bins = range(0, df["patents"].max() + 2)
+
+axes[0].hist(non_cust, bins=bins, color=ORANGE, edgecolor="white", linewidth=0.6)
+axes[0].axvline(non_cust.mean(), color="black", linestyle="--", linewidth=1.5, label=f"Mean = {non_cust.mean():.2f}")
+axes[0].set_title("Non-Customers", fontsize=13, fontweight="bold")
+axes[0].set_xlabel("Patents Awarded (5-Year Total)")
+axes[0].set_ylabel("Number of Firms")
+axes[0].legend(fontsize=10)
+
+axes[1].hist(cust, bins=bins, color=BLUE, edgecolor="white", linewidth=0.6)
+axes[1].axvline(cust.mean(), color="black", linestyle="--", linewidth=1.5, label=f"Mean = {cust.mean():.2f}")
+axes[1].set_title("Blueprinty Customers", fontsize=13, fontweight="bold")
+axes[1].set_xlabel("Patents Awarded (5-Year Total)")
+axes[1].legend(fontsize=10)
+
+fig.suptitle("Distribution of 5-Year Patent Counts by Customer Status", fontsize=14, fontweight="bold", y=1.01)
+plt.tight_layout()
+plt.savefig("patents_hist.png", dpi=150, bbox_inches="tight")
+plt.show()
+```
+
+Blueprinty customers average **`{python} f"{cust.mean():.2f}"`** patents over the five-year window, compared to **`{python} f"{non_cust.mean():.2f}"`** for non-customers — a difference of about `{python} f"{cust.mean() - non_cust.mean():.2f}"` patents. Both distributions are right-skewed, consistent with count data. The customer group has a heavier right tail, suggesting a subset of high-patent firms among Blueprinty's users. But before attributing this gap to the software, we need to check whether customers and non-customers differ systematically in age and region.
+
+### Regional Distribution
+
+```{python}
+#| echo: false
+region_counts = df.groupby(["region", "iscustomer"]).size().unstack(fill_value=0)
+region_share = region_counts.div(region_counts.sum(axis=1), axis=0)
+region_share.columns = ["Non-Customer", "Customer"]
+
+fig, ax = plt.subplots(figsize=(9, 4.5))
+
+x = np.arange(len(region_share))
+w = 0.38
+ax.bar(x - w/2, region_share["Non-Customer"], width=w, color=ORANGE, label="Non-Customer", edgecolor="white")
+ax.bar(x + w/2, region_share["Customer"], width=w, color=BLUE, label="Customer", edgecolor="white")
+
+ax.set_xticks(x)
+ax.set_xticklabels(region_share.index, fontsize=11)
+ax.yaxis.set_major_formatter(ticker.PercentFormatter(xmax=1))
+ax.set_ylabel("Share within Region")
+ax.set_title("Customer Penetration by Region", fontsize=13, fontweight="bold")
+ax.legend()
+plt.tight_layout()
+plt.savefig("region_bar.png", dpi=150, bbox_inches="tight")
+plt.show()
+```
+
+```{python}
+#| echo: false
+# raw counts table
+rc = region_counts.copy()
+rc.columns = ["Non-Customer", "Customer"]
+rc["Customer Rate"] = (rc["Customer"] / rc.sum(axis=1)).map("{:.1%}".format)
+display(rc.reset_index().rename(columns={"region": "Region"}))
+```
+
+The Northeast stands out: it has a noticeably higher share of Blueprinty customers relative to other regions. Since regions may also differ in patent culture, regulatory environment, or industry mix, this imbalance means that a raw comparison of patent counts could partially reflect regional differences rather than the software's effect.
+
+### Firm Age by Customer Status
+
+```{python}
+#| echo: false
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)
+
+for ax, (label, group, color) in zip(axes, [
+    ("Non-Customers", non_cust.index, ORANGE),
+    ("Blueprinty Customers", cust.index, BLUE)
+]):
+    subset = df.loc[group, "age"] if label == "Non-Customers" else df[df["iscustomer"] == 1]["age"]
+    if label == "Non-Customers":
+        subset = df[df["iscustomer"] == 0]["age"]
+    ax.hist(subset, bins=25, color=color, edgecolor="white", linewidth=0.6)
+    ax.axvline(subset.mean(), color="black", linestyle="--", linewidth=1.5,
+               label=f"Mean = {subset.mean():.1f} yrs")
+    ax.set_title(label, fontsize=13, fontweight="bold")
+    ax.set_xlabel("Firm Age (Years Since Incorporation)")
+    ax.set_ylabel("Number of Firms")
+    ax.legend(fontsize=10)
+
+fig.suptitle("Distribution of Firm Age by Customer Status", fontsize=14, fontweight="bold", y=1.01)
+plt.tight_layout()
+plt.savefig("age_hist.png", dpi=150, bbox_inches="tight")
+plt.show()
+```
+
+```{python}
+#| echo: false
+age_summary = df.groupby("iscustomer")["age"].agg(["mean", "median", "std"]).round(2)
+age_summary.index = ["Non-Customer", "Customer"]
+age_summary.columns = ["Mean Age", "Median Age", "Std Dev"]
+display(age_summary)
+```
+
+Blueprinty customers are **slightly older** on average (~`{python} f"{df[df['iscustomer']==1]['age'].mean():.1f}"` years) compared to non-customers (~`{python} f"{df[df['iscustomer']==0]['age'].mean():.1f}"` years), though the gap is modest. Firm age still matters: patenting activity may vary over a firm's life cycle, and if age is correlated with both software adoption and patent productivity, failing to control for it could bias the estimated association between Blueprinty use and patent counts.
+
+These two findings — regional concentration and age differences — motivate a regression approach that holds these confounders constant.
+
+---
+
+## A Simple Poisson Model via Maximum Likelihood
+
+### Why Poisson?
+
+Patent counts are non-negative integers: 0, 1, 2, 3, … A Normal distribution is a poor fit because it places probability mass on negative values and treats the data as continuous. The **Poisson distribution** is the natural starting point for non-negative integer outcomes. Its single parameter λ controls both the mean and the variance of the distribution, and the PMF is:
+
+$$
+f(Y \mid \lambda) = \frac{e^{-\lambda} \lambda^Y}{Y!}, \qquad Y = 0, 1, 2, \ldots
+$$
+
+### Deriving the Log-Likelihood
+
+Given $n$ independent observations $Y_1, \ldots, Y_n$, the **joint likelihood** is:
+
+$$
+L(\lambda \mid \mathbf{Y}) = \prod_{i=1}^n \frac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
+$$
+
+Taking the natural log turns the product into a sum (and makes optimization far easier numerically):
+
+$$
+\ell(\lambda \mid \mathbf{Y}) = \sum_{i=1}^n \left( -\lambda + Y_i \ln \lambda - \ln Y_i! \right)
+$$
+
+$$
+= -n\lambda + \ln\lambda \sum_{i=1}^n Y_i - \sum_{i=1}^n \ln Y_i!
+$$
+
+### Analytic MLE
+
+Setting $\frac{d\ell}{d\lambda} = 0$:
+
+$$
+\frac{d\ell}{d\lambda} = -n + \frac{1}{\lambda}\sum_{i=1}^n Y_i = 0 \implies \hat{\lambda}_{\text{MLE}} = \bar{Y}
+$$
+
+This makes intuitive sense: the MLE for the Poisson rate is simply the sample mean, because $\mathbb{E}[Y] = \lambda$ under the Poisson model.
+
+### Coding the Log-Likelihood
+
+```{python}
+from scipy.special import gammaln  # log(Y!) = log(Gamma(Y+1))
+
+def poisson_loglikelihood(lam, Y):
+    """Log-likelihood of Poisson(lambda) for observed counts Y."""
+    if lam <= 0:
+        return -np.inf
+    return np.sum(-lam + Y * np.log(lam) - gammaln(Y + 1))
+
+Y = df["patents"].values
+```
+
+### Visualizing the Log-Likelihood
+
+```{python}
+lambdas = np.linspace(0.5, 10, 300)
+ll_vals = [poisson_loglikelihood(l, Y) for l in lambdas]
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+ax.plot(lambdas, ll_vals, color=BLUE, linewidth=2)
+ax.axvline(Y.mean(), color="crimson", linestyle="--", linewidth=1.8,
+           label=f"$\\hat{{\\lambda}}_{{MLE}} = \\bar{{Y}} = {Y.mean():.3f}$")
+ax.set_xlabel("λ (Poisson Rate Parameter)", fontsize=12)
+ax.set_ylabel("Log-Likelihood ℓ(λ | Y)", fontsize=12)
+ax.set_title("Poisson Log-Likelihood over the Observed Patent Data", fontsize=13, fontweight="bold")
+ax.legend(fontsize=11)
+plt.tight_layout()
+plt.savefig("loglik_curve.png", dpi=150, bbox_inches="tight")
+plt.show()
+```
+
+The curve is concave and peaks exactly at $\bar{Y}$ — visually confirming the analytic result. Values of λ far from the sample mean produce dramatically lower log-likelihoods, showing that the data are highly informative about the parameter.
+
+### Numerical MLE with `scipy.optimize`
+
+```{python}
+neg_ll = lambda lam: -poisson_loglikelihood(lam[0], Y)
+result = optimize.minimize(neg_ll, x0=[3.0], method="Nelder-Mead")
+lambda_mle = result.x[0]
+
+print(f"Numerical MLE:  λ̂ = {lambda_mle:.5f}")
+print(f"Sample mean:    Ȳ  = {Y.mean():.5f}")
+```
+
+The numerical optimizer recovers the sample mean to five decimal places, exactly as the analytic derivation predicts. This cross-check confirms that the log-likelihood function is coded correctly before we move on to the regression setting.
+
+---
+
+## Poisson Regression
+
+### From a Fixed Rate to Firm-Specific Rates
+
+The simple Poisson model assumed every firm shares the same patent rate λ. That's clearly unrealistic — firms differ in age, location, and technology adoption. Poisson regression lets each firm have its own rate:
+
+$$
+Y_i \sim \text{Poisson}(\lambda_i), \qquad \lambda_i = \exp(X_i'\beta)
+$$
+
+We use the **exponential link** because $\lambda_i$ must be strictly positive, while the linear predictor $X_i'\beta$ can be any real number. The exponential function maps $\mathbb{R} \to (0, \infty)$, keeping predictions valid.
+
+### Updating the Log-Likelihood
+
+```{python}
+def poisson_regression_loglikelihood(beta, Y, X):
+    """Poisson regression log-likelihood. lambda_i = exp(X_i @ beta)."""
+    lam = np.exp(X @ beta)
+    return np.sum(-lam + Y * np.log(lam) - gammaln(Y + 1))
+```
+
+### Constructing the Design Matrix
+
+```{python}
+# One-hot encode region, drop one category to avoid multicollinearity
+region_dummies = pd.get_dummies(df["region"], drop_first=True).astype(float)
+
+X_df = pd.DataFrame({
+    "intercept": 1.0,
+    "age": df["age"],
+    "age_sq": df["age"] ** 2,
+}).join(region_dummies).join(df[["iscustomer"]].astype(float))
+
+X = X_df.values
+feature_names = X_df.columns.tolist()
+print("Design matrix columns:", feature_names)
+print("Shape:", X.shape)
+```
+
+**Design choices:**
+
+- **Intercept**: always included as the first column.
+- **Age + Age²**: firm age likely has a non-linear relationship with patent output — very young and very old firms may differ from those in their prime. Including the squared term lets the model capture this curvature.
+- **Region dummies**: we include indicators for all but one region (the dropped reference category). Keeping all regions would create perfect collinearity with the intercept, making the system unsolvable.
+- **`iscustomer`**: the key variable of interest.
+
+### Finding the MLE with `scipy.optimize`
+
+```{python}
+from scipy.optimize import minimize
+from scipy.linalg import inv
+
+def neg_loglik(beta):
+    eta = X @ beta
+    mu = np.exp(eta)
+    return -np.sum(Y * eta - mu - gammaln(Y + 1))
+
+def neg_score(beta):
+    """Gradient of the negative log-likelihood: X.T @ (mu - Y)"""
+    mu = np.exp(X @ beta)
+    return X.T @ (mu - Y)
+
+def neg_hessian(beta):
+    """Hessian of the negative log-likelihood: X.T @ diag(mu) @ X"""
+    mu = np.exp(X @ beta)
+    return X.T @ (mu[:, None] * X)
+
+# Start intercept at log(sample mean) for numerical stability; other coeffs = 0
+beta0 = np.r_[np.log(Y.mean()), np.zeros(X.shape[1] - 1)]
+
+result_reg = minimize(
+    neg_loglik,
+    beta0,
+    method="trust-ncg",
+    jac=neg_score,
+    hess=neg_hessian,
+    options={"maxiter": 1000}
+)
+
+beta_hat = result_reg.x
+print("Converged:", result_reg.success)
+print("Message:  ", result_reg.message)
+
+# SE = sqrt of diagonal of inverse observed information matrix
+H = neg_hessian(beta_hat)
+cov_hat = inv(H)
+se_hat = np.sqrt(np.diag(cov_hat))
+
+results_df = pd.DataFrame({
+    "Coefficient": beta_hat,
+    "Std. Error": se_hat,
+    "z-value": beta_hat / se_hat
+}, index=feature_names)
+
+print(results_df.round(5))
+```
+
+### Checking Against `statsmodels`
+
+```{python}
+# Pass X_df (DataFrame) so glm_result.params has named index
+glm_model = sm.GLM(Y, X_df, family=sm.families.Poisson())
+glm_result = glm_model.fit()
+
+comparison = pd.DataFrame({
+    "MLE (manual)": beta_hat,
+    "GLM (statsmodels)": glm_result.params.to_numpy(),
+    "SE (manual)": se_hat,
+    "SE (GLM)": glm_result.bse.to_numpy()
+}, index=feature_names).round(5)
+
+print(comparison)
+```
+
+The coefficient estimates from our hand-coded MLE and `statsmodels.GLM` match closely. Standard errors differ slightly: `statsmodels` computes them from the **observed information matrix** (the exact Hessian evaluated at the MLE), while our numerical Hessian uses a finite-difference approximation. Both are asymptotically valid, but the GLM standard errors are generally more precise.
+
+### Formatted Results Table
+
+```{python}
+#| echo: false
+glm_summary = pd.DataFrame({
+    "Estimate": glm_result.params.to_numpy(),
+    "Std. Error": glm_result.bse.to_numpy(),
+    "z-value": glm_result.tvalues.to_numpy(),
+    "p-value": glm_result.pvalues.to_numpy()
+}, index=feature_names).round(4)
+
+label_map = {
+    "intercept": "Intercept",
+    "age": "Firm Age",
+    "age_sq": "Firm Age²",
+    "iscustomer": "Blueprinty Customer",
+}
+for col in region_dummies.columns:
+    label_map[col] = f"Region: {col}"
+
+glm_summary.index = [label_map.get(c, c) for c in glm_summary.index]
+glm_summary["Sig."] = glm_summary["p-value"].apply(
+    lambda p: "***" if p < 0.001 else ("**" if p < 0.01 else ("*" if p < 0.05 else ""))
+)
+
+display(glm_summary)
+```
+
+### Interpreting the Coefficients
+
+Because $\lambda_i = \exp(X_i'\beta)$, the Poisson regression coefficients are **log-rate ratios**. A unit increase in a predictor multiplies the expected patent count by $e^\beta$.
+
+```{python}
+#| echo: false
+coef_cust = glm_result.params["iscustomer"]
+rate_ratio = np.exp(coef_cust)
+pct_change = (rate_ratio - 1) * 100
+pval_cust  = glm_result.pvalues["iscustomer"]
+print(f"iscustomer coefficient: {coef_cust:.4f}")
+print(f"Rate ratio exp(β):      {rate_ratio:.4f}")
+print(f"Percentage change:      {pct_change:.1f}%")
+print(f"p-value:                {pval_cust:.4e}")
+```
+
+**Key takeaways:**
+
+- **Blueprinty Customer**: the coefficient is positive and statistically significant (p < 0.001). Exponentiating it gives a rate ratio of roughly 1.23, meaning that — after controlling for age and region — Blueprinty customers have about **23% more** expected patents than otherwise comparable non-customers.
+
+- **Firm Age** has a positive coefficient and **Age²** has a negative coefficient, tracing an inverted-U relationship: patent output rises with age up to a point, then flattens or declines as older firms may shift priorities away from R&D.
+
+- **Regional dummies** capture differences in patent productivity across geographies, holding other factors constant.
+
+---
+
+## The Effect of Blueprinty's Software
+
+The coefficient on `iscustomer` tells us the *multiplicative* change in the expected patent rate. But it's more useful to report the estimated effect in **patent counts** — a quantity that non-technical stakeholders can immediately understand.
+
+We use the **Average Treatment Effect (ATE)** via counterfactual prediction:
+
+1. Create $X_0$: set `iscustomer = 0` for every firm.
+2. Create $X_1$: set `iscustomer = 1` for every firm.
+3. Predict $\hat{y}_0 = \exp(X_0 \hat\beta)$ and $\hat{y}_1 = \exp(X_1 \hat\beta)$.
+4. Report $\frac{1}{n}\sum_i (\hat{y}_{1i} - \hat{y}_{0i})$.
+
+```{python}
+beta_glm = glm_result.params.to_numpy()
+
+cust_col = feature_names.index("iscustomer")
+X0 = X.copy(); X0[:, cust_col] = 0
+X1 = X.copy(); X1[:, cust_col] = 1
+
+y_hat_0 = np.exp(X0 @ beta_glm)
+y_hat_1 = np.exp(X1 @ beta_glm)
+
+ate = np.mean(y_hat_1 - y_hat_0)
+print(f"Estimated ATE: {ate:.4f} additional patents per firm over 5 years")
+```
+
+```{python}
+#| echo: false
+diff = y_hat_1 - y_hat_0
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+ax.hist(diff, bins=35, color=BLUE, edgecolor="white", linewidth=0.6, alpha=0.85)
+ax.axvline(ate, color="crimson", linestyle="--", linewidth=2,
+           label=f"Mean effect = {ate:.3f} patents")
+ax.set_xlabel("Predicted Additional Patents (Customer vs. Non-Customer)", fontsize=12)
+ax.set_ylabel("Number of Firms", fontsize=12)
+ax.set_title("Distribution of Firm-Level Counterfactual Effects", fontsize=13, fontweight="bold")
+ax.legend(fontsize=11)
+plt.tight_layout()
+plt.savefig("ate_hist.png", dpi=150, bbox_inches="tight")
+plt.show()
+```
+
+After holding firm age and regional location constant, switching a firm from non-customer to customer status is associated with an average of **`{python} f"{ate:.3f}"` additional patents over a five-year window**. Given a typical baseline of around 3–4 patents per firm, this represents a meaningful relative increase.
+
+### What This Analysis Does — and Doesn't — Establish
+
+This result is consistent with Blueprinty's marketing claim, and the association survives controls for two important confounders (age and region). However, a few important caveats apply:
+
+- **Observational, not experimental**: firms were not randomly assigned to use Blueprinty's software. Firms that chose to adopt it may differ from non-adopters in ways we cannot fully measure — internal R&D culture, management quality, or patent strategy.
+- **No pre-treatment baseline**: ideally we would observe each firm's patent rate *before* and *after* adopting the software. The cross-sectional data here cannot rule out that high-patenting firms were simply more likely to become customers in the first place.
+- **Omitted variables**: the model controls for age and region but not for firm size, R&D spending, or industry sub-sector, all of which could confound the relationship.
+
+In short: the analysis provides credible *correlational* evidence in support of Blueprinty's claim, but **a randomized experiment or a difference-in-differences design with panel data would be needed to make a causal claim**.

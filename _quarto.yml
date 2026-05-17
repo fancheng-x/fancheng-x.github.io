@@ -20,6 +20,8 @@ website:
             text: "HW1"
           - href: hw2_questions.qmd
             text: "HW2 — Angrist & Lavy (1999)"
+          - href: hw3_questions.qmd
+            text: "HW3 — Poisson MLE"
 
 format:
   html:
