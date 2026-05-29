@@ -274,7 +274,7 @@ window.Quarto = {
 </section>
 <section id="the-data" class="level2">
 <h2 class="anchored" data-anchor-id="the-data">The Data</h2>
-<div id="74975f25" class="cell" data-execution_count="1">
+<div id="7af2a63e" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -328,7 +328,7 @@ Total tasks           : 680</code></pre>
 </div>
 </div>
 <p>Note: the raw data contains a phantom “Item 11” with no label, appearing in truncated tasks of only 2 rows. These tasks are excluded — every retained task has exactly 4 rows, one best pick, and one worst pick.</p>
-<div id="95638855" class="cell" data-execution_count="2">
+<div id="45bf44ce" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Sanity check ───────────────────────────────────────────────────────────────</span></span>
@@ -344,7 +344,7 @@ Total tasks           : 680</code></pre>
 Every task has exactly one worst: True</code></pre>
 </div>
 </div>
-<div id="e288dde3" class="cell" data-execution_count="3">
+<div id="8202c8a6" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Exposure counts ────────────────────────────────────────────────────────────</span></span>
@@ -374,7 +374,7 @@ Every task has exactly one worst: True</code></pre>
 <p>The counts analysis is the simplest summary of MaxDiff data. For each item <span class="math inline">\(j\)</span>, we compute:</p>
 <p><span class="math display">\[\text{score}_j = \%\text{best}_j - \%\text{worst}_j\]</span></p>
 <p>where <span class="math inline">\(\%\text{best}_j\)</span> is the fraction of times item <span class="math inline">\(j\)</span> was picked best out of the times it was shown, and similarly for worst. A score near +1 means the item is almost always chosen as best; near −1, almost always chosen as worst; near 0, the item is middle-of-the-pack or polarizing.</p>
-<div id="1f2060ee" class="cell" data-execution_count="4">
+<div id="937a6993" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>item_stats <span class="op">=</span> df.groupby(<span class="st">"Item"</span>).agg(</span>
@@ -406,7 +406,7 @@ Every task has exactly one worst: True</code></pre>
     6 Analytics Consulting          267          33          111     0.124      0.416 -0.292</code></pre>
 </div>
 </div>
-<div id="aa815865" class="cell" data-execution_count="5">
+<div id="ccc8f090" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Bootstrap 95% CIs on counts scores ────────────────────────────────────────</span></span>
@@ -460,7 +460,7 @@ Every task has exactly one worst: True</code></pre>
 </div>
 </div>
 </div>
-<p><strong>Observations:</strong> Marketing Analytics (MGTA 495) stands out as the clear top preference, with a large positive counts score. Customer Analytics (MGTA 455) and Large Data (MGTA 452) also rank highly. At the bottom, Analytics Consulting (MGTA 444) and the AI Math/Programming course (MGTA 403) are most frequently chosen as worst. SQL (MGTA 464) and Mkt/Fin/Ops (MGTA 451) sit in the middle. The bootstrap confidence intervals confirm that the top and bottom rankings are statistically reliable, while the middle cluster shows more overlap.</p>
+<p><strong>Observations:</strong> Marketing Analytics (MGTA 495) stands out as the clear top preference, with a large positive counts score. Customer Analytics (MGTA 455) and Large Data (MGTA 452) also rank highly. At the bottom, Analytics Consulting (MGTA 444) and the AI Math/Programming course (MGTA 403) are most frequently chosen as worst. SQL sits near the middle, while Mkt/Fin/Ops is closer to the lower end of the ranking. The bootstrap confidence intervals confirm that the top and bottom rankings are statistically reliable, while the middle cluster shows more overlap.</p>
 <hr>
 </section>
 <section id="from-maxdiff-data-to-mnl-choices" class="level2">
@@ -471,7 +471,7 @@ Every task has exactly one worst: True</code></pre>
 <p><span class="math display">\[P(\text{worst} = c \mid \text{best} = b) = \frac{\exp(-\beta_c)}{\exp(-\beta_a) + \exp(-\beta_c) + \exp(-\beta_d)}\]</span></p>
 <p>So each task yields <strong>two</strong> MNL observations: the best-pick from all 4 items, and the worst-pick from the remaining 3.</p>
 <p><strong>Identifiability:</strong> The softmax is invariant to adding a constant to every <span class="math inline">\(\beta\)</span>, so only <span class="math inline">\(J - 1 = 9\)</span> of the 10 coefficients are identified. We fix <span class="math inline">\(\beta_1 = 0\)</span> (MGTA 403 as reference) and estimate <span class="math inline">\(\beta_2, \ldots, \beta_{10}\)</span>.</p>
-<div id="c3c55853" class="cell" data-execution_count="6">
+<div id="90772b46" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Build task arrays (vectorized, for speed) ──────────────────────────────────</span></span>
@@ -508,7 +508,7 @@ Every task has exactly one worst: True</code></pre>
 <p>The log-likelihood, summing over all tasks, is:</p>
 <p><span class="math display">\[\ell(\boldsymbol{\beta}) = \sum_{\text{tasks}} \Big[\, \beta_{j^*_b} - \log\!\!\sum_{j \in \text{shown}}\!\!\exp(\beta_j) - \beta_{j^*_w} - \log\!\!\!\!\!\sum_{j \in \text{shown} \setminus \{j^*_b\}}\!\!\!\!\exp(-\beta_j) \,\Big]\]</span></p>
 <p>where <span class="math inline">\(j^*_b\)</span> is the best-picked item and <span class="math inline">\(j^*_w\)</span> is the worst-picked item in that task. We use the log-sum-exp trick throughout for numerical stability.</p>
-<div id="97385cd7" class="cell" data-execution_count="7">
+<div id="5d58ade7" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
@@ -579,7 +579,7 @@ Every task has exactly one worst: True</code></pre>
     6 Analytics Consulting -0.239 0.141  0.044</code></pre>
 </div>
 </div>
-<div id="b64f381a" class="cell" data-execution_count="8">
+<div id="78eac6bb" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot MLE shares ────────────────────────────────────────────────────────────</span></span>
@@ -613,7 +613,7 @@ Every task has exactly one worst: True</code></pre>
 <p><span class="math display">\[\pi(\boldsymbol{\beta} \mid \boldsymbol{y}) \;\propto\; L(\boldsymbol{\beta}) \cdot \pi(\boldsymbol{\beta})\]</span></p>
 <p>We use a weakly informative prior: <span class="math inline">\(\beta_j \sim N(0, 10)\)</span> for each of the 9 free parameters. This places 95% of prior probability in <span class="math inline">\([-6.2, 6.2]\)</span>, which is very diffuse relative to the MLE estimates.</p>
 <p>We draw from the posterior using a <strong>random-walk Metropolis-Hastings</strong> sampler: at each step, we propose <span class="math inline">\(\boldsymbol{\beta}^* = \boldsymbol{\beta} + \epsilon\)</span> where <span class="math inline">\(\epsilon \sim N(\mathbf{0}, \sigma^2 I)\)</span>, and accept with probability <span class="math inline">\(\min(1,\; e^{\log\pi(\boldsymbol{\beta}^*) - \log\pi(\boldsymbol{\beta})})\)</span>.</p>
-<div id="e578cde5" class="cell" data-execution_count="9">
+<div id="8d524e2c" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_prior(beta):</span>
@@ -624,7 +624,7 @@ Every task has exactly one worst: True</code></pre>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>n_iter  <span class="op">=</span> <span class="dv">20000</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>step    <span class="op">=</span> <span class="fl">0.15</span>   <span class="co"># tuned to ~30% acceptance</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>step <span class="op">=</span> <span class="fl">0.08</span>  <span class="co"># tuned to ~30% acceptance</span></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>K       <span class="op">=</span> <span class="dv">9</span></span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>beta    <span class="op">=</span> np.zeros(K)</span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>lp      <span class="op">=</span> log_post(beta)</span>
@@ -644,10 +644,10 @@ Every task has exactly one worst: True</code></pre>
 <span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Acceptance rate: </span><span class="sc">{</span>accept_rate<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Acceptance rate: 0.062</code></pre>
+<pre><code>Acceptance rate: 0.293</code></pre>
 </div>
 </div>
-<div id="8f0296ba" class="cell" data-execution_count="10">
+<div id="cc250ed2" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Diagnostics: trace plots ───────────────────────────────────────────────────</span></span>
@@ -673,13 +673,13 @@ Every task has exactly one worst: True</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="hw4_questions_files/figure-html/cell-11-output-1.png" width="941" height="569" class="figure-img"></p>
+<p><img src="hw4_questions_files/figure-html/cell-11-output-1.png" width="958" height="569" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>The chains show the characteristic “fuzzy caterpillar” pattern after burn-in, indicating the sampler has mixed well. There is no visible drift or slow wandering.</p>
-<div id="1bbd1ec5" class="cell" data-execution_count="11">
+<div id="4ffeee43" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Posterior summaries ────────────────────────────────────────────────────────</span></span>
@@ -714,19 +714,19 @@ Every task has exactly one worst: True</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> Item                Label  post_mean  ci_lo  ci_hi  share  share_lo  share_hi
-    9        Mkt Analytics      1.677  1.394  1.959  0.288     0.245     0.334
-    5        Biz Analytics      0.771  0.498  1.051  0.117     0.094     0.140
-    7   Customer Analytics      0.684  0.423  0.953  0.107     0.088     0.130
-    4           Large Data      0.574  0.321  0.868  0.096     0.080     0.116
-    8             Capstone      0.475  0.209  0.734  0.087     0.071     0.103
-    2                  SQL      0.460  0.215  0.716  0.085     0.071     0.103
-   10     Biz Intelligence      0.274  0.017  0.557  0.071     0.058     0.085
-    1              AI Math      0.000    NaN    NaN  0.054     0.045     0.065
-    3          Mkt/Fin/Ops     -0.039 -0.312  0.225  0.052     0.043     0.063
-    6 Analytics Consulting     -0.217 -0.508  0.012  0.043     0.035     0.052</code></pre>
+    9        Mkt Analytics      1.648  1.345  1.920  0.285     0.242     0.331
+    5        Biz Analytics      0.753  0.463  1.026  0.117     0.096     0.139
+    7   Customer Analytics      0.668  0.370  0.938  0.107     0.087     0.129
+    4           Large Data      0.562  0.291  0.836  0.096     0.080     0.117
+    8             Capstone      0.458  0.181  0.738  0.087     0.071     0.106
+    2                  SQL      0.449  0.180  0.725  0.086     0.071     0.103
+   10     Biz Intelligence      0.254 -0.007  0.499  0.071     0.058     0.085
+    1              AI Math      0.000    NaN    NaN  0.055     0.045     0.068
+    3          Mkt/Fin/Ops     -0.055 -0.328  0.244  0.052     0.042     0.064
+    6 Analytics Consulting     -0.234 -0.504  0.049  0.044     0.035     0.053</code></pre>
 </div>
 </div>
-<div id="60f61025" class="cell" data-execution_count="12">
+<div id="f6efc575" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot Bayesian shares with CIs ──────────────────────────────────────────────</span></span>
@@ -763,7 +763,7 @@ Every task has exactly one worst: True</code></pre>
 </section>
 <section id="comparing-the-three-methods" class="level2">
 <h2 class="anchored" data-anchor-id="comparing-the-three-methods">Comparing the Three Methods</h2>
-<div id="c71aaf6b" class="cell" data-execution_count="13">
+<div id="c8309ace" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Build comparison table ─────────────────────────────────────────────────────</span></span>
@@ -788,19 +788,19 @@ Every task has exactly one worst: True</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> Item                Label  counts_score  counts_rank  mle_share  mle_rank  bayes_share  bayes_rank
-    9        Mkt Analytics         0.493            1      0.284         1        0.288           1
+    9        Mkt Analytics         0.493            1      0.284         1        0.285           1
     5        Biz Analytics         0.141            2      0.117         2        0.117           2
     7   Customer Analytics         0.120            3      0.107         3        0.107           3
     4           Large Data         0.062            4      0.097         4        0.096           4
     8             Capstone         0.011            5      0.087         5        0.087           5
-    2                  SQL        -0.004            6      0.086         6        0.085           6
+    2                  SQL        -0.004            6      0.086         6        0.086           6
    10     Biz Intelligence        -0.120            7      0.070         7        0.071           7
-    1              AI Math        -0.209            8      0.056         8        0.054           8
+    1              AI Math        -0.209            8      0.056         8        0.055           8
     3          Mkt/Fin/Ops        -0.213            9      0.052         9        0.052           9
-    6 Analytics Consulting        -0.292           10      0.044        10        0.043          10</code></pre>
+    6 Analytics Consulting        -0.292           10      0.044        10        0.044          10</code></pre>
 </div>
 </div>
-<div id="a6ebc81d" class="cell" data-execution_count="14">
+<div id="b8823ca8" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Side-by-side bar charts ────────────────────────────────────────────────────</span></span>
@@ -857,7 +857,7 @@ Every task has exactly one worst: True</code></pre>
 </section>
 <section id="discussion" class="level2">
 <h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
-<p><strong>Substantive finding:</strong> MSBA students most strongly prefer Marketing Analytics (MGTA 495, Yavorsky) and Customer Analytics (MGTA 455, Nijs) — both of which are elective-style, applied analytics courses with direct career relevance. Large Data (MGTA 452) also ranks highly, likely because data engineering skills are highly valued in the job market. At the other end, Analytics Consulting and the foundational AI Math course are least preferred, perhaps because students view them as less directly applicable or enjoyable relative to the rest of the curriculum.</p>
+<p><strong>Substantive finding:</strong> MSBA students most strongly prefer Marketing Analytics (MGTA 495, Yavorsky) and Customer Analytics (MGTA 455, Nijs) — both of which are elective-style, applied analytics courses with direct career relevance. Large Data (MGTA 452) also ranks highly, likely because data engineering skills are highly valued in the job market. At the other end, Analytics Consulting, Mkt/Fin/Ops, and AI Math form the lowest-ranked group, perhaps because students view them as less directly applicable or enjoyable relative to the rest of the curriculum.</p>
 <p><strong>Methodological takeaways:</strong></p>
 <ul>
 <li><strong>Counts analysis</strong> is fast and transparent — a good first pass or executive summary. It requires no modeling assumptions.</li>

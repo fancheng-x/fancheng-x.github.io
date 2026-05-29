@@ -169,7 +169,7 @@ plt.tight_layout()
 plt.show()
 ```
 
-**Observations:** Marketing Analytics (MGTA 495) stands out as the clear top preference, with a large positive counts score. Customer Analytics (MGTA 455) and Large Data (MGTA 452) also rank highly. At the bottom, Analytics Consulting (MGTA 444) and the AI Math/Programming course (MGTA 403) are most frequently chosen as worst. SQL (MGTA 464) and Mkt/Fin/Ops (MGTA 451) sit in the middle. The bootstrap confidence intervals confirm that the top and bottom rankings are statistically reliable, while the middle cluster shows more overlap.
+**Observations:** Marketing Analytics (MGTA 495) stands out as the clear top preference, with a large positive counts score. Customer Analytics (MGTA 455) and Large Data (MGTA 452) also rank highly. At the bottom, Analytics Consulting (MGTA 444) and the AI Math/Programming course (MGTA 403) are most frequently chosen as worst. SQL sits near the middle, while Mkt/Fin/Ops is closer to the lower end of the ranking. The bootstrap confidence intervals confirm that the top and bottom rankings are statistically reliable, while the middle cluster shows more overlap.
 
 ---
 
@@ -317,7 +317,7 @@ def log_post(beta):
 
 np.random.seed(42)
 n_iter  = 20000
-step    = 0.15   # tuned to ~30% acceptance
+step = 0.08  # tuned to ~30% acceptance
 K       = 9
 beta    = np.zeros(K)
 lp      = log_post(beta)
@@ -495,7 +495,7 @@ Bayes adds one more layer over MLE: credible intervals on derived quantities lik
 
 ## Discussion
 
-**Substantive finding:** MSBA students most strongly prefer Marketing Analytics (MGTA 495, Yavorsky) and Customer Analytics (MGTA 455, Nijs) — both of which are elective-style, applied analytics courses with direct career relevance. Large Data (MGTA 452) also ranks highly, likely because data engineering skills are highly valued in the job market. At the other end, Analytics Consulting and the foundational AI Math course are least preferred, perhaps because students view them as less directly applicable or enjoyable relative to the rest of the curriculum.
+**Substantive finding:** MSBA students most strongly prefer Marketing Analytics (MGTA 495, Yavorsky) and Customer Analytics (MGTA 455, Nijs) — both of which are elective-style, applied analytics courses with direct career relevance. Large Data (MGTA 452) also ranks highly, likely because data engineering skills are highly valued in the job market. At the other end, Analytics Consulting, Mkt/Fin/Ops, and AI Math form the lowest-ranked group, perhaps because students view them as less directly applicable or enjoyable relative to the rest of the curriculum.
 
 **Methodological takeaways:**
 
