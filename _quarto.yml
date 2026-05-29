@@ -22,6 +22,8 @@ website:
             text: "HW2 — Angrist & Lavy (1999)"
           - href: hw3_questions.qmd
             text: "HW3 — Poisson MLE"
+          - href: hw4_questions.qmd
+            text: "HW4 — MaxDiff & MNL"
 
 format:
   html:
