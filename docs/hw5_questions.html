@@ -199,7 +199,7 @@ window.Quarto = {
  <span class="dropdown-text">HW4 — MaxDiff &amp; MNL</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./hw5_questions.qmdx">
+    <a class="dropdown-item" href="./hw5_questions.html">
  <span class="dropdown-text">HW5 — Key Drivers</span></a>
   </li>  
     </ul>
@@ -327,7 +327,7 @@ window.Quarto = {
 </section>
 <section id="setup" class="level2">
 <h2 class="anchored" data-anchor-id="setup">Setup</h2>
-<div id="b3f3bd5b" class="cell" data-execution_count="1">
+<div id="985206b8" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
@@ -362,7 +362,7 @@ window.Quarto = {
 <p>The squared Pearson correlation between each predictor <span class="math inline">\(X_j\)</span> and <span class="math inline">\(Y\)</span>, normalized to sum to 100%.</p>
 <p><span class="math display">\[r_j = \text{corr}(X_j, Y)^2\]</span></p>
 <p>This is equivalent to the <span class="math inline">\(R^2\)</span> from a simple regression of <span class="math inline">\(Y\)</span> on <span class="math inline">\(X_j\)</span> alone. It is fast and always gives the correct sign, but “double counts” shared variance when predictors are correlated.</p>
-<div id="51e81436" class="cell" data-execution_count="2">
+<div id="fa572beb" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pearson <span class="op">=</span> np.array([np.corrcoef(X[:, j], y)[<span class="dv">0</span>, <span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span> <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(p)])</span>
@@ -375,7 +375,7 @@ window.Quarto = {
 <p>Standardize all variables (mean 0, SD 1), run a single OLS regression, and use the squared coefficients as importance weights.</p>
 <p><span class="math display">\[\hat{\beta}_{j, \text{std}}^2 \quad \text{from} \quad y_{\text{std}} = \sum_j \beta_j X_{j,\text{std}}\]</span></p>
 <p>Fast (one regression), but <strong>under-counts</strong> contributions from correlated predictors because collinearity inflates standard errors and shrinks coefficients.</p>
-<div id="728f7ad2" class="cell" data-execution_count="3">
+<div id="c6a96e75" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
@@ -391,7 +391,7 @@ window.Quarto = {
 <p>The incremental <span class="math inline">\(R^2\)</span> lost by removing variable <span class="math inline">\(j\)</span> from the full model:</p>
 <p><span class="math display">\[\Delta R^2_j = R^2_{\text{full}} - R^2_{-j}\]</span></p>
 <p>Requires <span class="math inline">\(K + 1\)</span> regressions. Like standardized coefficients, this <strong>under-counts</strong> the contribution of correlated predictors (shared variance is not allocated).</p>
-<div id="dca37c2f" class="cell" data-execution_count="4">
+<div id="ea481ad0" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> r2(X_sub, y):</span>
@@ -416,7 +416,7 @@ window.Quarto = {
 <p><span class="math display">\[\phi_j = \sum_{S \subseteq P \setminus \{j\}} \frac{|S|!\,(p-|S|-1)!}{p!} \left[ R^2(S \cup \{j\}) - R^2(S) \right]\]</span></p>
 <p>This is the gold standard for variable importance: it uniquely satisfies efficiency (values sum to <span class="math inline">\(R^2\)</span>), symmetry, and fairness. Computationally expensive (<span class="math inline">\(2^p\)</span> regressions), but with <span class="math inline">\(p = 9\)</span> this is only 512 models — easily tractable.</p>
 <p>The code below implements the formula directly, without any Shapley library.</p>
-<div id="cc38fa43" class="cell" data-execution_count="5">
+<div id="f1b87c5a" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>shapley <span class="op">=</span> np.zeros(p)</span>
@@ -447,7 +447,7 @@ Full model R^2:        0.1090</code></pre>
 <p>An algebraic approximation to Shapley values for linear regression (Johnson 2000). It orthogonalizes the predictors via SVD, fits OLS on the orthogonal components, then rotates the contributions back to the original predictors:</p>
 <p><span class="math display">\[\epsilon_j = \sum_k \hat{\lambda}_k \cdot v_{kj}^2\]</span></p>
 <p>where <span class="math inline">\(\hat{\lambda}_k\)</span> is the variance explained by the <span class="math inline">\(k\)</span>-th orthogonal component and <span class="math inline">\(v_{kj}\)</span> are loadings from the SVD. Extremely fast (just matrix algebra), and a good approximation to Shapley values — but only available for linear regression.</p>
-<div id="a98df7a8" class="cell" data-execution_count="6">
+<div id="ddde3191" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>U, s, Vt <span class="op">=</span> np.linalg.svd(X_std, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
@@ -463,7 +463,7 @@ Full model R^2:        0.1090</code></pre>
 <p>A Random Forest grows 500 decision trees on bootstrapped samples, each using a random feature subset. Variable importance is the <strong>average reduction in MSE</strong> each time variable <span class="math inline">\(j\)</span> is used as a split, aggregated across all trees and normalized:</p>
 <p><span class="math display">\[\text{Importance}_j = \frac{1}{B} \sum_{b=1}^{B} \sum_{\text{nodes using } j} \Delta \text{MSE}\]</span></p>
 <p>Model-free (no linearity assumption), captures interactions, and is computed as a byproduct of fitting the forest.</p>
-<div id="f7b6e85b" class="cell" data-execution_count="7">
+<div id="58e2bfbd" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestRegressor(n_estimators<span class="op">=</span><span class="dv">500</span>, random_state<span class="op">=</span><span class="dv">42</span>, n_jobs<span class="op">=-</span><span class="dv">1</span>)</span>
@@ -475,7 +475,7 @@ Full model R^2:        0.1090</code></pre>
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<div id="aa0fc551" class="cell" data-execution_count="8">
+<div id="8be2d9f6" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [</span>
@@ -502,7 +502,7 @@ Full model R^2:        0.1090</code></pre>
 <span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 

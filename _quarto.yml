@@ -24,7 +24,7 @@ website:
             text: "HW3 — Poisson MLE"
           - href: hw4_questions.qmd
             text: "HW4 — MaxDiff & MNL"
-          - href: hw5_questions.qmdx
+          - href: hw5_questions.qmd
             text: "HW5 — Key Drivers"
 
 format:
