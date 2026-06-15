@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Fancheng">
-<meta name="dcterms.date" content="2026-05-28">
+<meta name="dcterms.date" content="2026-06-14">
 
 <title>MaxDiff Analysis of MSBA Class Preferences – Fancheng Xia</title>
 <style>
@@ -195,6 +195,10 @@ window.Quarto = {
     <a class="dropdown-item" href="./hw4_questions.html">
  <span class="dropdown-text">HW4 — MaxDiff &amp; MNL</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./hw5_questions.html">
+ <span class="dropdown-text">HW5 — Key Drivers</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -247,7 +251,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 28, 2026</p>
+      <p class="date">June 14, 2026</p>
     </div>
   </div>
   
@@ -274,7 +278,7 @@ window.Quarto = {
 </section>
 <section id="the-data" class="level2">
 <h2 class="anchored" data-anchor-id="the-data">The Data</h2>
-<div id="7af2a63e" class="cell" data-execution_count="1">
+<div id="1fb5bf47" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -328,7 +332,7 @@ Total tasks           : 680</code></pre>
 </div>
 </div>
 <p>Note: the raw data contains a phantom “Item 11” with no label, appearing in truncated tasks of only 2 rows. These tasks are excluded — every retained task has exactly 4 rows, one best pick, and one worst pick.</p>
-<div id="45bf44ce" class="cell" data-execution_count="2">
+<div id="b2981bcc" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Sanity check ───────────────────────────────────────────────────────────────</span></span>
@@ -344,7 +348,7 @@ Total tasks           : 680</code></pre>
 Every task has exactly one worst: True</code></pre>
 </div>
 </div>
-<div id="8202c8a6" class="cell" data-execution_count="3">
+<div id="28db4753" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Exposure counts ────────────────────────────────────────────────────────────</span></span>
@@ -374,7 +378,7 @@ Every task has exactly one worst: True</code></pre>
 <p>The counts analysis is the simplest summary of MaxDiff data. For each item <span class="math inline">\(j\)</span>, we compute:</p>
 <p><span class="math display">\[\text{score}_j = \%\text{best}_j - \%\text{worst}_j\]</span></p>
 <p>where <span class="math inline">\(\%\text{best}_j\)</span> is the fraction of times item <span class="math inline">\(j\)</span> was picked best out of the times it was shown, and similarly for worst. A score near +1 means the item is almost always chosen as best; near −1, almost always chosen as worst; near 0, the item is middle-of-the-pack or polarizing.</p>
-<div id="937a6993" class="cell" data-execution_count="4">
+<div id="fc25fda7" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>item_stats <span class="op">=</span> df.groupby(<span class="st">"Item"</span>).agg(</span>
@@ -406,7 +410,7 @@ Every task has exactly one worst: True</code></pre>
     6 Analytics Consulting          267          33          111     0.124      0.416 -0.292</code></pre>
 </div>
 </div>
-<div id="ccc8f090" class="cell" data-execution_count="5">
+<div id="2ae27890" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Bootstrap 95% CIs on counts scores ────────────────────────────────────────</span></span>
@@ -471,7 +475,7 @@ Every task has exactly one worst: True</code></pre>
 <p><span class="math display">\[P(\text{worst} = c \mid \text{best} = b) = \frac{\exp(-\beta_c)}{\exp(-\beta_a) + \exp(-\beta_c) + \exp(-\beta_d)}\]</span></p>
 <p>So each task yields <strong>two</strong> MNL observations: the best-pick from all 4 items, and the worst-pick from the remaining 3.</p>
 <p><strong>Identifiability:</strong> The softmax is invariant to adding a constant to every <span class="math inline">\(\beta\)</span>, so only <span class="math inline">\(J - 1 = 9\)</span> of the 10 coefficients are identified. We fix <span class="math inline">\(\beta_1 = 0\)</span> (MGTA 403 as reference) and estimate <span class="math inline">\(\beta_2, \ldots, \beta_{10}\)</span>.</p>
-<div id="90772b46" class="cell" data-execution_count="6">
+<div id="4f48ccdb" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Build task arrays (vectorized, for speed) ──────────────────────────────────</span></span>
@@ -508,7 +512,7 @@ Every task has exactly one worst: True</code></pre>
 <p>The log-likelihood, summing over all tasks, is:</p>
 <p><span class="math display">\[\ell(\boldsymbol{\beta}) = \sum_{\text{tasks}} \Big[\, \beta_{j^*_b} - \log\!\!\sum_{j \in \text{shown}}\!\!\exp(\beta_j) - \beta_{j^*_w} - \log\!\!\!\!\!\sum_{j \in \text{shown} \setminus \{j^*_b\}}\!\!\!\!\exp(-\beta_j) \,\Big]\]</span></p>
 <p>where <span class="math inline">\(j^*_b\)</span> is the best-picked item and <span class="math inline">\(j^*_w\)</span> is the worst-picked item in that task. We use the log-sum-exp trick throughout for numerical stability.</p>
-<div id="5d58ade7" class="cell" data-execution_count="7">
+<div id="9cd72a13" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
@@ -579,7 +583,7 @@ Every task has exactly one worst: True</code></pre>
     6 Analytics Consulting -0.239 0.141  0.044</code></pre>
 </div>
 </div>
-<div id="78eac6bb" class="cell" data-execution_count="8">
+<div id="0bca46f5" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot MLE shares ────────────────────────────────────────────────────────────</span></span>
@@ -613,7 +617,7 @@ Every task has exactly one worst: True</code></pre>
 <p><span class="math display">\[\pi(\boldsymbol{\beta} \mid \boldsymbol{y}) \;\propto\; L(\boldsymbol{\beta}) \cdot \pi(\boldsymbol{\beta})\]</span></p>
 <p>We use a weakly informative prior: <span class="math inline">\(\beta_j \sim N(0, 10)\)</span> for each of the 9 free parameters. This places 95% of prior probability in <span class="math inline">\([-6.2, 6.2]\)</span>, which is very diffuse relative to the MLE estimates.</p>
 <p>We draw from the posterior using a <strong>random-walk Metropolis-Hastings</strong> sampler: at each step, we propose <span class="math inline">\(\boldsymbol{\beta}^* = \boldsymbol{\beta} + \epsilon\)</span> where <span class="math inline">\(\epsilon \sim N(\mathbf{0}, \sigma^2 I)\)</span>, and accept with probability <span class="math inline">\(\min(1,\; e^{\log\pi(\boldsymbol{\beta}^*) - \log\pi(\boldsymbol{\beta})})\)</span>.</p>
-<div id="8d524e2c" class="cell" data-execution_count="9">
+<div id="53e0afbf" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_prior(beta):</span>
@@ -647,7 +651,7 @@ Every task has exactly one worst: True</code></pre>
 <pre><code>Acceptance rate: 0.293</code></pre>
 </div>
 </div>
-<div id="cc250ed2" class="cell" data-execution_count="10">
+<div id="3de75d2e" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Diagnostics: trace plots ───────────────────────────────────────────────────</span></span>
@@ -679,7 +683,7 @@ Every task has exactly one worst: True</code></pre>
 </div>
 </div>
 <p>The chains show the characteristic “fuzzy caterpillar” pattern after burn-in, indicating the sampler has mixed well. There is no visible drift or slow wandering.</p>
-<div id="4ffeee43" class="cell" data-execution_count="11">
+<div id="6d74925a" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Posterior summaries ────────────────────────────────────────────────────────</span></span>
@@ -726,7 +730,7 @@ Every task has exactly one worst: True</code></pre>
     6 Analytics Consulting     -0.234 -0.504  0.049  0.044     0.035     0.053</code></pre>
 </div>
 </div>
-<div id="f6efc575" class="cell" data-execution_count="12">
+<div id="ada54514" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Plot Bayesian shares with CIs ──────────────────────────────────────────────</span></span>
@@ -763,7 +767,7 @@ Every task has exactly one worst: True</code></pre>
 </section>
 <section id="comparing-the-three-methods" class="level2">
 <h2 class="anchored" data-anchor-id="comparing-the-three-methods">Comparing the Three Methods</h2>
-<div id="c8309ace" class="cell" data-execution_count="13">
+<div id="0bb2732f" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Build comparison table ─────────────────────────────────────────────────────</span></span>
@@ -800,7 +804,7 @@ Every task has exactly one worst: True</code></pre>
     6 Analytics Consulting        -0.292           10      0.044        10        0.044          10</code></pre>
 </div>
 </div>
-<div id="b8823ca8" class="cell" data-execution_count="14">
+<div id="00a85f30" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ── Side-by-side bar charts ────────────────────────────────────────────────────</span></span>
