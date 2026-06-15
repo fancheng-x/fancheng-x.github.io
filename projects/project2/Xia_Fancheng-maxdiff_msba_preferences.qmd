@@ -1,0 +1,284 @@
+---
+title: "MaxDiff Analysis of MSBA Class Preferences"
+subtitle: "Counts · MLE · Bayesian Estimation of the MNL Model"
+author: "Fancheng Xia"
+date: today
+jupyter: mgta495
+format:
+  revealjs:
+    embed-resources: true
+    theme: [simple, custom.scss]
+    slide-number: true
+    fontsize: 1.55em
+    margin: 0.07
+    transition: fade
+    transition-speed: fast
+    title-slide-attributes:
+      data-background-color: "#FFFFFF"
+    css: |
+      .reveal .slides .title-slide h1 { color: #2C7BB6 !important; font-weight: 700; }
+      .reveal .slides .title-slide .subtitle { color: #555 !important; }
+execute:
+  warning: false
+  message: false
+  echo: false
+---
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import warnings
+warnings.filterwarnings('ignore')
+
+# ── Palette aligned with cosmo/blog blue ──────────────────────────────────────
+BLUE   = "#2C7BB6"
+TEAL   = "#1A9988"
+RED    = "#D7191C"
+GRAY   = "#6C757D"
+LIGHT  = "#EAF3FB"
+BG     = "#FFFFFF"
+
+mpl.rcParams.update({
+    "figure.facecolor": BG,
+    "axes.facecolor":   BG,
+    "axes.edgecolor":   "#CCCCCC",
+    "axes.linewidth":   0.8,
+    "axes.spines.top":  False,
+    "axes.spines.right":False,
+    "grid.color":       "#E5E5E5",
+    "grid.linewidth":   0.6,
+    "font.family":      "sans-serif",
+    "font.size":        11,
+    "xtick.color":      GRAY,
+    "ytick.color":      "#333333",
+})
+
+df_raw = pd.read_csv("files/maxdiff_design_and_choices.csv")
+labels_df = pd.read_csv("files/maxdiff_item_labels.csv", usecols=[0, 1])
+labels_df.columns = ["item", "label"]
+labels_df["short"] = [
+    "AI Math", "SQL", "Mkt/Fin/Ops", "Large Data", "Biz Analytics",
+    "Analytics Consulting", "Customer Analytics", "Capstone",
+    "Mkt Analytics", "Biz Intelligence",
+]
+short_map = dict(zip(labels_df["item"], labels_df["short"]))
+
+task_sizes = df_raw.groupby(["Record ID", "Task"]).size()
+complete = task_sizes[task_sizes == 4].reset_index()[["Record ID", "Task"]]
+df = df_raw.merge(complete, on=["Record ID", "Task"])
+N = df["Record ID"].nunique()
+T = df.groupby("Record ID")["Task"].nunique().iloc[0]
+
+# ── Counts ──────────────────────────────────────────────────────────────────
+item_stats = df.groupby("Item").agg(
+    times_shown=("Response", "count"),
+    times_best=("Response", lambda x: (x == 1).sum()),
+    times_worst=("Response", lambda x: (x == -1).sum()),
+).reset_index()
+item_stats["pct_best"]  = item_stats["times_best"]  / item_stats["times_shown"]
+item_stats["pct_worst"] = item_stats["times_worst"] / item_stats["times_shown"]
+item_stats["score"]     = item_stats["pct_best"] - item_stats["pct_worst"]
+item_stats["label"]     = item_stats["Item"].map(short_map)
+item_stats = item_stats.sort_values("score", ascending=False).reset_index(drop=True)
+
+# ── MNL task arrays ──────────────────────────────────────────────────────────
+tasks_raw = []
+for (rid, tid), g in df.groupby(["Record ID", "Task"]):
+    items = g["Item"].values
+    best  = g.loc[g["Response"] ==  1, "Item"].values[0]
+    worst = g.loc[g["Response"] == -1, "Item"].values[0]
+    tasks_raw.append((items, best, worst))
+
+n_tasks = len(tasks_raw)
+items_mat     = np.zeros((n_tasks, 4), dtype=int)
+best_arr      = np.zeros(n_tasks, dtype=int)
+worst_arr     = np.zeros(n_tasks, dtype=int)
+remaining_mat = np.zeros((n_tasks, 3), dtype=int)
+
+for t, (items, best, worst) in enumerate(tasks_raw):
+    idx = np.array(items) - 1
+    items_mat[t]     = idx
+    best_arr[t]      = best - 1
+    worst_arr[t]     = worst - 1
+    remaining_mat[t] = idx[idx != (best - 1)]
+
+# ── MLE ──────────────────────────────────────────────────────────────────────
+from scipy.optimize import minimize
+
+def log_likelihood(beta):
+    b = np.concatenate([[0.0], beta])
+    u  = b[items_mat]
+    m1 = u.max(axis=1, keepdims=True)
+    ll_best  = b[best_arr]  - (m1.squeeze() + np.log(np.sum(np.exp(u - m1), axis=1)))
+    nw = -b[remaining_mat]
+    m2 = nw.max(axis=1, keepdims=True)
+    ll_worst = -b[worst_arr] - (m2.squeeze() + np.log(np.sum(np.exp(nw - m2), axis=1)))
+    return np.sum(ll_best) + np.sum(ll_worst)
+
+res = minimize(lambda x: -log_likelihood(x), x0=np.zeros(9),
+               method="BFGS", options={"maxiter": 10000, "gtol": 1e-6})
+beta_mle  = np.concatenate([[0.0], res.x])
+shares_mle = np.exp(beta_mle) / np.exp(beta_mle).sum()
+mle_df = pd.DataFrame({"Item": range(1, 11),
+                        "Label": [short_map[i] for i in range(1, 11)],
+                        "share": shares_mle}
+                      ).sort_values("share", ascending=False).reset_index(drop=True)
+
+# ── Bayesian MCMC ─────────────────────────────────────────────────────────────
+def log_prior(beta): return np.sum(-0.5 * beta**2 / 10.0)
+def log_post(beta):  return log_likelihood(beta) + log_prior(beta)
+
+np.random.seed(42)
+n_iter, step, K = 20000, 0.08, 9
+beta, lp = np.zeros(K), log_post(np.zeros(K))
+draws, accept = np.zeros((n_iter, K)), 0
+for t in range(n_iter):
+    prop = beta + np.random.normal(0, step, K)
+    lp_p = log_post(prop)
+    if np.log(np.random.uniform()) < lp_p - lp:
+        beta, lp, accept = prop, lp_p, accept + 1
+    draws[t] = beta
+
+post = draws[n_iter // 4:]
+bf   = np.column_stack([np.zeros(len(post)), post])
+sd   = np.exp(bf) / np.exp(bf).sum(axis=1, keepdims=True)
+shares_post  = sd.mean(axis=0)
+shares_ci_lo = np.percentile(sd, 2.5,  axis=0)
+shares_ci_hi = np.percentile(sd, 97.5, axis=0)
+
+bayes_df = pd.DataFrame({"Item": range(1, 11),
+                          "Label": [short_map[i] for i in range(1, 11)],
+                          "share": shares_post,
+                          "lo": shares_ci_lo,
+                          "hi": shares_ci_hi}
+                        ).sort_values("share", ascending=False).reset_index(drop=True)
+```
+
+## What is MaxDiff? {background-color="#EAF3FB"}
+
+**The problem with rating scales**
+
+- Respondents use Likert scales inconsistently — one person's "7" is another's "9"
+- No forced differentiation: everything ends up rated highly
+
+**MaxDiff (Best-Worst Scaling)**
+
+- Each screen: see **4 items**, pick **most** and **least** preferred
+- Forces real trade-offs → more reliable, comparable preferences
+
+**This study:** 10 MSBA core courses · `{python} int(N)` respondents · `{python} int(T)` tasks each
+
+---
+
+## Three Methods, One Question {background-color="#EAF3FB"}
+
+> *Which MSBA courses do students prefer most?*
+
+:::: {.columns}
+
+::: {.column width="33%"}
+**① Counts**
+
+$$\text{score}_j = \%\text{best}_j - \%\text{worst}_j$$
+
+Fast · transparent · zero modeling assumptions
+:::
+
+::: {.column width="33%"}
+**② MNL via MLE**
+
+$$P(\text{best}=j) = \frac{e^{\beta_j}}{\sum_k e^{\beta_k}}$$
+
+Accounts for competitive context · standard errors
+:::
+
+::: {.column width="33%"}
+**③ MNL via Bayes**
+
+$$\pi(\beta \mid y) \propto L(\beta)\,\pi(\beta)$$
+
+Full posterior → uncertainty on derived quantities
+:::
+
+::::
+
+::: {.callout-note appearance="minimal"}
+Each method adds something the previous one lacks.
+:::
+
+---
+
+## Results: All Three Methods Agree
+
+```{python}
+#| fig-align: center
+counts_cmp = item_stats[["Item","label","score"]].copy()
+counts_cmp.columns = ["Item","Label","cs"]
+mle_cmp   = mle_df[["Item","share"]].rename(columns={"share":"ms"})
+bayes_cmp = bayes_df[["Item","share","lo","hi"]].rename(columns={"share":"bs"})
+cmp = counts_cmp.merge(mle_cmp, on="Item").merge(bayes_cmp, on="Item")
+cmp = cmp.sort_values("ms").reset_index(drop=True)
+
+fig, axes = plt.subplots(1, 3, figsize=(13, 4.4))
+
+def bar_color(vals, threshold=0):
+    return [BLUE if v > threshold else RED for v in vals]
+
+# ① Counts
+ax = axes[0]
+ax.barh(range(10), cmp["cs"], color=bar_color(cmp["cs"]), alpha=0.88, height=0.65)
+ax.set_yticks(range(10)); ax.set_yticklabels(cmp["Label"], fontsize=9)
+ax.axvline(0, color="#999", lw=0.8, ls="--")
+ax.set_title("① Counts Score", fontsize=11, color="#1A1A2E", pad=8)
+ax.set_xlabel("% Best − % Worst", fontsize=9, color=GRAY)
+
+# ② MLE
+ax = axes[1]
+ax.barh(range(10), cmp["ms"], color=bar_color(cmp["ms"], 0.10), alpha=0.88, height=0.65)
+ax.set_yticks(range(10)); ax.set_yticklabels(cmp["Label"], fontsize=9)
+ax.axvline(0.10, color="#999", lw=0.8, ls="--")
+ax.set_title("② MLE Share", fontsize=11, color="#1A1A2E", pad=8)
+ax.set_xlabel("Preference Share", fontsize=9, color=GRAY)
+
+# ③ Bayes
+ax = axes[2]
+ax.barh(range(10), cmp["bs"], color=bar_color(cmp["bs"], 0.10), alpha=0.88, height=0.65)
+ax.errorbar(cmp["bs"], range(10),
+            xerr=[cmp["bs"]-cmp["lo"], cmp["hi"]-cmp["bs"]],
+            fmt="none", color="#333", capsize=3, lw=1.1)
+ax.set_yticks(range(10)); ax.set_yticklabels(cmp["Label"], fontsize=9)
+ax.axvline(0.10, color="#999", lw=0.8, ls="--")
+ax.set_title("③ Bayesian Posterior Share", fontsize=11, color="#1A1A2E", pad=8)
+ax.set_xlabel("Posterior Mean Share + 95% CI", fontsize=9, color=GRAY)
+
+fig.suptitle("Three-Method Comparison — MSBA Class Preferences",
+             fontsize=12, color="#1A1A2E", y=1.01)
+plt.tight_layout()
+plt.show()
+```
+
+::: {.fragment}
+**Mkt Analytics (#9) dominates all three.** · Middle cluster rankings vary — that's where real uncertainty lives.
+:::
+
+---
+
+## When to Use Each Method {background-color="#EAF3FB"}
+
+| Method | Best for | Key limitation |
+|--------|----------|----------------|
+| **Counts** | Quick first pass, executive summary | Ignores competitive context |
+| **MLE** | Point estimate + standard errors | CIs on derived quantities need delta method |
+| **Bayes** | Uncertainty on shares, downstream decisions | Computationally heavier |
+
+. . .
+
+**The Bayesian advantage in one sentence:**
+
+> Push every MCMC draw through softmax → credible intervals on preference shares, *for free* — no delta method required.
+
+. . .
+
+**Next step →** Hierarchical Bayes: individual-level $\beta_i$ to find preference *segments* (tech vs. finance vs. consulting track).

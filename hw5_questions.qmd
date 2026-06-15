@@ -1,0 +1,210 @@
+---
+title: "Key Drivers Analysis"
+author: "Fancheng"
+date: today
+jupyter: mgta495
+format:
+  html:
+    toc: true
+    code-fold: true
+    df-print: kable
+---
+
+## Overview
+
+This post replicates the key drivers analysis from the MGTA 455 slides (slide 75), using customer satisfaction survey data with 9 perception attributes. The goal is to compare multiple methods for measuring **variable importance** — i.e., how much each attribute contributes to explaining overall satisfaction.
+
+**Response variable:** `satisfaction`  
+**Predictors (9 attributes):**
+
+| Variable | Description |
+|---|---|
+| trust | Is offered by a brand I trust |
+| build | Helps build credit quickly |
+| differs | Is different from other cards |
+| easy | Is easy to use |
+| appealing | Has appealing benefits or rewards |
+| rewarding | Rewards me for responsible usage |
+| popular | Is used by a lot of people |
+| service | Provides outstanding customer service |
+| impact | Makes a difference in my life |
+
+> **Note on the medium challenge:** the Shapley values below are implemented from scratch (no `shap` package) — an explicit loop over all $2^p$ subsets, with $R^2$ as the fit metric.
+
+## Setup
+
+```{python}
+import math
+import numpy as np
+import pandas as pd
+from itertools import combinations
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
+
+df = pd.read_csv("files/data_for_drivers_analysis.csv")
+
+y_col = "satisfaction"
+x_cols = ["trust", "build", "differs", "easy", "appealing",
+          "rewarding", "popular", "service", "impact"]
+
+X = df[x_cols].values
+y = df[y_col].values
+p = X.shape[1]
+
+print(f"N = {len(df):,}  |  p = {p} predictors")
+```
+
+## Methods
+
+### 1. Pearson Correlations
+
+The squared Pearson correlation between each predictor $X_j$ and $Y$, normalized to sum to 100%.
+
+$$r_j = \text{corr}(X_j, Y)^2$$
+
+This is equivalent to the $R^2$ from a simple regression of $Y$ on $X_j$ alone. It is fast and always gives the correct sign, but "double counts" shared variance when predictors are correlated.
+
+```{python}
+pearson = np.array([np.corrcoef(X[:, j], y)[0, 1]**2 for j in range(p)])
+pearson_pct = pearson / pearson.sum()
+```
+
+### 2. Standardized Regression Coefficients
+
+Standardize all variables (mean 0, SD 1), run a single OLS regression, and use the squared coefficients as importance weights.
+
+$$\hat{\beta}_{j, \text{std}}^2 \quad \text{from} \quad y_{\text{std}} = \sum_j \beta_j X_{j,\text{std}}$$
+
+Fast (one regression), but **under-counts** contributions from correlated predictors because collinearity inflates standard errors and shrinks coefficients.
+
+```{python}
+scaler = StandardScaler()
+X_std = scaler.fit_transform(X)
+y_std = (y - y.mean()) / y.std()
+coef = LinearRegression().fit(X_std, y_std).coef_
+std_coefs_pct = coef**2 / (coef**2).sum()
+```
+
+### 3. Drop-one Usefulness ($\Delta R^2$)
+
+The incremental $R^2$ lost by removing variable $j$ from the full model:
+
+$$\Delta R^2_j = R^2_{\text{full}} - R^2_{-j}$$
+
+Requires $K + 1$ regressions. Like standardized coefficients, this **under-counts** the contribution of correlated predictors (shared variance is not allocated).
+
+```{python}
+def r2(X_sub, y):
+    if X_sub.ndim == 1:
+        X_sub = X_sub.reshape(-1, 1)
+    if X_sub.shape[1] == 0:
+        return 0.0
+    return LinearRegression().fit(X_sub, y).score(X_sub, y)
+
+r2_full = r2(X, y)
+usefulness = np.array([
+    r2_full - r2(X[:, [k for k in range(p) if k != j]], y)
+    for j in range(p)
+])
+usefulness_pct = usefulness / usefulness.sum()
+```
+
+### 4. Shapley Values (Exact, Hand-Coded)
+
+Shapley values from cooperative game theory fairly distribute the total $R^2$ across all predictors. For each variable $j$, we compute its **average marginal contribution** across all $2^{p-1}$ possible subsets $S \subseteq \{1,\ldots,p\} \setminus \{j\}$:
+
+$$\phi_j = \sum_{S \subseteq P \setminus \{j\}} \frac{|S|!\,(p-|S|-1)!}{p!} \left[ R^2(S \cup \{j\}) - R^2(S) \right]$$
+
+This is the gold standard for variable importance: it uniquely satisfies efficiency (values sum to $R^2$), symmetry, and fairness. Computationally expensive ($2^p$ regressions), but with $p = 9$ this is only 512 models — easily tractable.
+
+The code below implements the formula directly, without any Shapley library.
+
+```{python}
+shapley = np.zeros(p)
+for j in range(p):
+    others = [k for k in range(p) if k != j]
+    for size in range(p):
+        for subset in combinations(others, size):
+            subset = list(subset)
+            w = math.factorial(size) * math.factorial(p - size - 1) / math.factorial(p)
+            X_with = X[:, subset + [j]]
+            X_without = X[:, subset] if subset else np.empty((X.shape[0], 0))
+            shapley[j] += w * (r2(X_with, y) - r2(X_without, y))
+
+shapley_pct = shapley / shapley.sum()
+
+# Sanity check: Shapley values should sum to the full R^2
+print(f"Sum of Shapley values: {shapley.sum():.4f}")
+print(f"Full model R^2:        {r2_full:.4f}")
+```
+
+### 5. Johnson's Relative Weights (Epsilon)
+
+An algebraic approximation to Shapley values for linear regression (Johnson 2000). It orthogonalizes the predictors via SVD, fits OLS on the orthogonal components, then rotates the contributions back to the original predictors:
+
+$$\epsilon_j = \sum_k \hat{\lambda}_k \cdot v_{kj}^2$$
+
+where $\hat{\lambda}_k$ is the variance explained by the $k$-th orthogonal component and $v_{kj}$ are loadings from the SVD. Extremely fast (just matrix algebra), and a good approximation to Shapley values — but only available for linear regression.
+
+```{python}
+U, s, Vt = np.linalg.svd(X_std, full_matrices=False)
+Z = U * s
+beta_z = LinearRegression(fit_intercept=False).fit(Z, y_std).coef_
+johnson = np.array([np.sum(beta_z**2 * Vt[:, j]**2) for j in range(p)])
+johnson_pct = johnson / johnson.sum()
+```
+
+### 6. Random Forest: Mean Decrease in Impurity (Gini)
+
+A Random Forest grows 500 decision trees on bootstrapped samples, each using a random feature subset. Variable importance is the **average reduction in MSE** each time variable $j$ is used as a split, aggregated across all trees and normalized:
+
+$$\text{Importance}_j = \frac{1}{B} \sum_{b=1}^{B} \sum_{\text{nodes using } j} \Delta \text{MSE}$$
+
+Model-free (no linearity assumption), captures interactions, and is computed as a byproduct of fitting the forest.
+
+```{python}
+rf = RandomForestRegressor(n_estimators=500, random_state=42, n_jobs=-1)
+rf.fit(X, y)
+rf_pct = rf.feature_importances_ / rf.feature_importances_.sum()
+```
+
+## Results
+
+```{python}
+labels = [
+    "Is offered by a brand I trust",
+    "Helps build credit quickly",
+    "Is different from other cards",
+    "Is easy to use",
+    "Has appealing benefits or rewards",
+    "Rewards me for responsible usage",
+    "Is used by a lot of people",
+    "Provides outstanding customer service",
+    "Makes a difference in my life",
+]
+
+results = pd.DataFrame({
+    "Perception": labels,
+    "Pearson Corr (%)": (pearson_pct * 100).round(1),
+    "Std Coefs (%)": (std_coefs_pct * 100).round(1),
+    "Drop-one (%)": (usefulness_pct * 100).round(1),
+    "Shapley (%)": (shapley_pct * 100).round(1),
+    "Johnson's ε (%)": (johnson_pct * 100).round(1),
+    "RF Gini (%)": (rf_pct * 100).round(1),
+})
+
+results
+```
+
+## Takeaways
+
+The methods fall into three groups by how they handle correlated predictors:
+
+**Over-counts shared variance** — Pearson correlations assign full credit to each predictor independently, so totals "double count" when predictors are correlated. `trust`, `service`, and `impact` score highest here, but the spread across attributes is compressed.
+
+**Under-counts shared variance** — Standardized coefficients and drop-one both attribute shared variance only to the predictors remaining in the model. This dramatically deflates estimates for correlated variables (`build`, `easy`, `rewarding` all drop near 1%) and over-weights the single strongest driver (`impact` jumps to ~40% on drop-one).
+
+**Fairly allocates shared variance** — Shapley values and Johnson's epsilon split credit appropriately. The three top drivers are consistent across both: **impact**, **trust**, and **service**, each accounting for roughly 12–22%. The Random Forest ranking — which makes no linearity assumption — agrees and identifies the same three as the most important.
+
+> **Recommendation:** Shapley values (or Johnson's epsilon as a fast approximation) are preferred for key drivers analysis. The business should focus on improving **impact** ("makes a difference in my life"), **trust**, and **service** for the greatest gains in customer satisfaction.

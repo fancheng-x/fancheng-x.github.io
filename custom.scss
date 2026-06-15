@@ -1,0 +1,96 @@
+/*-- scss:defaults --*/
+$body-bg:         #ffffff;
+$body-color:      #1A1A2E;
+$link-color:      #2C7BB6;
+$presentation-heading-color: #1A1A2E;
+$presentation-heading-font-weight: 600;
+$font-family-sans-serif: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+$presentation-h1-font-size: 1.8em;
+$presentation-h2-font-size: 1.3em;
+
+/*-- scss:rules --*/
+
+/* Slide background */
+.reveal .slides section {
+  padding: 0 2em;
+}
+
+/* Title slide */
+.reveal .title-slide h1 {
+  color: #2C7BB6;
+  font-size: 1.9em;
+  font-weight: 700;
+}
+.reveal .title-slide .subtitle {
+  color: #555;
+  font-size: 0.9em;
+  letter-spacing: 0.04em;
+}
+
+/* Section headers */
+.reveal h2 {
+  border-bottom: 3px solid #2C7BB6;
+  padding-bottom: 0.2em;
+  margin-bottom: 0.6em;
+}
+
+/* Background slides */
+.reveal section[data-background-color="#EAF3FB"] h2 {
+  color: #1A5A8A;
+}
+
+/* Callout */
+.reveal .callout-note {
+  background: #EAF3FB;
+  border-left: 4px solid #2C7BB6;
+  border-radius: 4px;
+  padding: 0.4em 0.8em;
+  font-size: 0.88em;
+  color: #1A5A8A;
+}
+
+/* Table */
+.reveal table {
+  font-size: 0.85em;
+  border-collapse: collapse;
+  width: 100%;
+}
+.reveal table th {
+  background: #2C7BB6;
+  color: white;
+  padding: 0.4em 0.7em;
+  font-weight: 600;
+}
+.reveal table td {
+  padding: 0.35em 0.7em;
+  border-bottom: 1px solid #E0E0E0;
+}
+.reveal table tr:nth-child(even) td {
+  background: #F5F9FD;
+}
+
+/* Slide number */
+.reveal .slide-number {
+  color: #2C7BB6;
+  font-size: 0.75em;
+}
+
+/* Blockquote */
+.reveal blockquote {
+  border-left: 4px solid #2C7BB6;
+  background: #F5F9FD;
+  padding: 0.5em 1em;
+  font-style: italic;
+  color: #1A5A8A;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Strong emphasis */
+.reveal strong {
+  color: #2C7BB6;
+}
+
+/* Column layout gap */
+.reveal .columns {
+  gap: 1.5em;
+}
