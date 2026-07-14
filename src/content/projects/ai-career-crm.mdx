@@ -1,13 +1,13 @@
 ---
-title: Turning job postings into a structured application pipeline
-subtitle: Python · Notion API · LLM parsing · workflow automation
+title: A local AI copilot that turns job-search chaos into relationship intelligence
+subtitle: Streamlit · Claude · hybrid search + rerank · local-first (SQLite)
 year: '2026'
 categories: ['ai', 'product']
 role: Solo — product, design & build
-tools: ['Python', 'Notion API', 'LLM parsing', 'Clipboard automation']
-businessProblem: Tracking a job search across dozens of postings is tedious and error-prone — so I built a tool that turns a copied job posting into a structured, logged application record in one step.
-impactValue: '1-click'
-impactLabel: 'job posting →<br>structured record'
+tools: ['Python', 'Streamlit', 'Claude (LLM)', 'Hybrid retrieval + rerank', 'SQLite']
+businessProblem: A job search generates data faster than you can organize it — applications, contacts, coffee-chat notes, follow-ups — so I built a local AI CRM that structures it, searches it, and recommends the next move.
+impactValue: '9-page'
+impactLabel: 'local AI product · Claude-powered<br>confirm-before-write agent'
 impactPlaceholder: false
 featured: false
 order: 3
@@ -19,64 +19,78 @@ import Pipeline from '../../components/Pipeline.astro';
 
 ## Executive summary
 
-A serious job search is an operations problem: dozens of postings, each with a role, comp, location,
-requirements, and a deadline, all of which you need to track and prioritize. Manually copying that
-into a tracker is slow and gets skipped exactly when you're busiest. I built a small **AI-assisted CRM**
-that captures a job posting from the clipboard, uses an LLM to parse it into structured fields, and
-writes a clean record into a Notion pipeline — collapsing a five-minute chore into one action. It's a
-self-directed prototype I use on my own search, and it's where I get to be my own product manager,
-designer, and engineer. (Fit-scoring and follow-up automation are on the roadmap, not built yet — see below.)
+A serious job search is an operations problem: applications, contacts, coffee-chat recaps, and
+follow-ups pile up across notebooks and Notion faster than anyone keeps them organized — and a
+stale pipeline is useless for deciding what to do next. So I designed and built **Career CRM
+Copilot**, a local, LLM-powered application (Streamlit + Claude) that turns that scattered data into
+**structured relationship intelligence and recommended next actions**. It's a nine-page product I own
+end to end — data model, UX, retrieval, and the safety design around an AI agent that can change your
+data.
 
 ## The problem
 
-Off-the-shelf job trackers make *you* do the data entry: retype the title, paste the description,
-tag the stage, set a reminder. The friction means records go stale, and a stale pipeline is useless
-for prioritizing. I wanted the opposite: capture should be effortless, and the structure should be
-good enough to actually sort and filter on.
+Off-the-shelf trackers make *you* do the data entry and give you back a spreadsheet, not a decision.
+The questions that actually matter in a search — *who haven't I followed up with? which applications
+are stalling? what did that person say they cared about?* — require structure the tools don't build
+and judgment they don't offer.
 
-## My role
+## What I built
 
-Everything — I framed what the tool needed to do, designed the data model, and built it. The
-interesting decisions were product decisions, not just code: *what fields matter for prioritizing,
-and how little input can I get away with asking for?*
+A local-first app with nine pages, each mapped to a real job-search job-to-be-done:
 
-## How it works
-
-- **Capture.** Copy a job posting; a Python script reads it straight from the clipboard — no forms.
-- **Parse.** An LLM extracts structured fields (role, company, location, comp, key requirements,
-  deadline) from messy, inconsistent posting text.
-- **Log.** The structured record is written to a Notion database via the API, chunked to respect
-  Notion's field limits, and stamped into a pipeline view I can sort and filter.
+- **Structured extraction.** Paste any free text — a note, a recap, a full job description — and the
+  LLM decides what it is and pulls out contacts, companies, applications, a summary, and a follow-up
+  draft. A pasted JD becomes a role you've applied to; a same-name contact is detected so you attach
+  instead of duplicating.
+- **A confirm-before-write action agent.** Plain-language commands ("set this contact to high
+  priority", "log a coffee chat", "remind me to follow up") are resolved to *who* and *what* you
+  mean — and turned into a **plan you approve before anything is written**. The agent never mutates
+  data silently.
+- **Hybrid search + rerank.** Semantic (embedding) similarity blended with keyword scoring across
+  contacts, applications, and interactions, then LLM re-ranking that returns a ranked answer *with a
+  relevance reason, an evidence quote, and a suggested action.*
+- **A decision dashboard.** KPI cards, an **application funnel** (response rate, offer rate, average
+  days in each stage), distribution charts, an **action center** (open tasks, high-priority contacts
+  with no next action, pending follow-ups), and a one-click weekly decision memo.
+- **Insights & follow-ups.** Summaries of recent activity — themes, positioning signals, gaps — and
+  editable LinkedIn / email / message follow-up drafts.
 
 <Pipeline
   illustrative={false}
-  ariaLabel="Career CRM capture workflow"
-  caption="One action, four steps: a copied posting becomes a sortable, structured record — no forms, no retyping."
+  ariaLabel="Career CRM capture-to-action workflow"
+  caption="The core loop, and the one product decision I care most about: the AI proposes, but you confirm before anything is written to your data."
   steps={[
-    { label: 'Copy JD', sub: 'clipboard' },
-    { label: 'LLM parse', sub: 'extract fields', tone: 'accent' },
-    { label: 'Structured record', sub: 'role · comp · deadline' },
-    { label: 'Notion pipeline', sub: 'sortable' },
+    { label: 'Paste text', sub: 'note / JD' },
+    { label: 'LLM extract', sub: 'contacts · apps', tone: 'accent' },
+    { label: 'Review & confirm', sub: 'before write', tone: 'accent' },
+    { label: 'Local CRM', sub: 'SQLite' },
+    { label: 'Search · Insights', sub: 'next actions' },
   ]}
 />
 
-## Design decisions
+## Product & UX decisions
 
-- **Structured over raw.** Storing parsed fields — not just the pasted blob — is what makes the
-  pipeline sortable by deadline, comp, or fit.
-- **Minimal input.** The whole point is to remove friction; anything that requires typing is a
-  place the workflow will break down.
-- **Notion as the surface.** Reusing a tool I already live in beats building yet another UI to check.
+The interesting work here was product, not just code:
+
+- **Confirm-before-write.** An agent that can edit your records is only trustworthy if it can't
+  surprise you. Every change is a reviewable plan first — a deliberate safety choice.
+- **Local-first by design.** Everything lives in a local SQLite database and is never uploaded.
+  Privacy wasn't a feature bolted on; it's the architecture.
+- **Ambiguity handling.** When a name is ambiguous the agent asks rather than guesses, and the
+  extractor detects same-name contacts to prevent duplicates.
+- **Measuring AI quality.** Every correction I make on the review screen is logged as extraction
+  feedback (accuracy / correction rate), so the system's reliability is *observed*, not assumed.
 
 ## Why it matters
 
-This is the smallest possible version of the thing I like doing professionally: **spotting a
-repetitive, ambiguous workflow, modeling the data behind it, and using automation and AI to remove
-the friction.** It's a genuine demonstration of product-and-operations thinking applied to a real,
-if personal, problem.
+This is the clearest single demonstration of what I like doing: **spotting a messy, ambiguous
+workflow, modeling the data and decisions underneath it, and using AI to remove friction — while
+taking the product responsibility that comes with an agent that can act.** It's product thinking,
+operations thinking, and applied AI in one owned system.
 
 ## What I'd build next
 
-- A browser extension so capture works on any posting without leaving the page.
-- LLM-scored fit against my résumé, to auto-prioritize the pipeline.
-- Follow-up reminders and stage automation so the CRM nudges *me*.
+- A retrieval-quality evaluation harness (faithfulness / answer-correctness) to put numbers on the
+  search and extraction quality I currently track qualitatively.
+- Fit-scoring of new roles against my own profile to auto-prioritize the pipeline.
+- Calendar-aware follow-up nudges driven by the action center.

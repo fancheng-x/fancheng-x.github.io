@@ -16,6 +16,10 @@ hasCaseStudy: true
 ---
 
 import Pipeline from '../../components/Pipeline.astro';
+import Figure from '../../components/Figure.astro';
+import { Image } from 'astro:assets';
+import featImportances from '../../assets/yelp/feature-importances.png';
+import thresholdOpt from '../../assets/yelp/threshold-optimization.png';
 
 ## Executive summary
 
@@ -79,6 +83,10 @@ prep, modeling, and the LLM-based complaint analysis.
   <div class="metric"><div class="n">29</div><div class="k">Engineered features</div></div>
 </div>
 
+<Figure illustrative={false} caption="Real model output — the features that most drive 7-day rating-drop risk. Business-level rating and short-window rating / sentiment dynamics (rating_7d, negative_ratio_7d, rating_volatility) dominate — which is exactly what an operator can act on.">
+  <Image src={featImportances} alt="Top 20 Random Forest feature importances for rating-drop prediction" />
+</Figure>
+
 ## Recommendation & solution
 
 The output is an operator-facing signal: a ranked risk list plus the SHAP-driven and LLM-classified
@@ -96,6 +104,10 @@ marketplace quality where it's most at risk.
 Metrics are reported on held-out data; recall was deliberately favored over precision given the
 asymmetric cost of a missed at-risk venue. The model reflects historical review behavior and would
 need periodic retraining as platform and user behavior shift.
+
+<Figure illustrative={false} caption="Real model output — F1 across decision thresholds. The operating point (0.25) is chosen deliberately: it maximizes F1 while favoring recall, because missing an at-risk venue costs more than a false alarm.">
+  <Image src={thresholdOpt} alt="F1 score versus classification threshold, with the optimum marked at 0.25" />
+</Figure>
 
 ## What I'd do next
 

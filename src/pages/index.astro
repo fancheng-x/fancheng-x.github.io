@@ -78,8 +78,16 @@ const skills = [
         Each project starts from a decision someone needed to make. Titles describe the problem;
         the methods live inside.
       </p>
+      {featured && (
+        <div class="flagship">
+          <div class="flag-head">
+            <span class="flag-no">01</span>
+            <span class="flag-cat">Flagship project · Operations &amp; Simulation</span>
+          </div>
+          <ProjectCard project={featured} featured />
+        </div>
+      )}
       <div class="work">
-        {featured && <ProjectCard project={featured} featured />}
         {core.map((p) => <ProjectCard project={p} />)}
       </div>
 
@@ -155,6 +163,16 @@ const skills = [
   .cap p { font-size: 13.5px; color: var(--mut); line-height: 1.55; }
 
   .work { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .flagship { margin-bottom: 18px; }
+  .flag-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 12px; }
+  .flag-no {
+    font-family: var(--serif); font-size: clamp(38px, 6.5vw, 66px); font-weight: 500;
+    line-height: .9; color: var(--accent); letter-spacing: -.02em;
+  }
+  .flag-cat {
+    font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--mut);
+  }
   .addl-h {
     font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase;
     color: var(--mut); font-weight: 500; margin: 40px 0 18px; padding-top: 26px;
