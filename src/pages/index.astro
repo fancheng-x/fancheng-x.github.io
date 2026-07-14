@@ -10,7 +10,9 @@ const projects = (await getCollection('projects')).sort(
   (a, b) => a.data.order - b.data.order
 );
 const featured = projects.find((p) => p.data.featured);
-const rest = projects.filter((p) => p !== featured).slice(0, 4);
+// Home leads with three core projects (Operations × Product × AI); the rest live under "Additional".
+const core = projects.filter((p) => p !== featured && p.data.order <= 3);
+const additional = projects.filter((p) => p.data.order > 3);
 
 const capabilities = [
   { h: 'Frame the problem', p: 'Turn an ambiguous business question into a structured, decision-relevant analysis.' },
@@ -31,7 +33,7 @@ const skills = [
     <!-- HERO -->
     <header class="hero">
       <div class="hero-text">
-        <div class="avail">Open to full-time roles · Dec 2026</div>
+        <div class="avail">Open to full-time opportunities · starting Dec 2026</div>
         <h1 class="display hero-h">
           Turning complex operational and product questions into
           <span class="u">measurable decisions.</span>
@@ -78,8 +80,14 @@ const skills = [
       </p>
       <div class="work">
         {featured && <ProjectCard project={featured} featured />}
-        {rest.map((p) => <ProjectCard project={p} />)}
+        {core.map((p) => <ProjectCard project={p} />)}
       </div>
+
+      <h3 class="addl-h">Additional analytical work</h3>
+      <div class="work">
+        {additional.map((p) => <ProjectCard project={p} />)}
+      </div>
+
       <div class="work-more">
         <a class="btn sec" href={href('/work')}>See all projects →</a>
       </div>
@@ -147,6 +155,11 @@ const skills = [
   .cap p { font-size: 13.5px; color: var(--mut); line-height: 1.55; }
 
   .work { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .addl-h {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--mut); font-weight: 500; margin: 40px 0 18px; padding-top: 26px;
+    border-top: 1px solid var(--line);
+  }
   .work-more { margin-top: 26px; }
 
   .skills-grid {

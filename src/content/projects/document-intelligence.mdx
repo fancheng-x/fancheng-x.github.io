@@ -1,12 +1,12 @@
 ---
-title: Making 230+ enterprise documents instantly answerable
+title: Building grounded question answering across 230+ long-form documents
 subtitle: LLM QA · retrieval + reranking · transformers
 year: '2026'
 categories: ['ai']
 role: Project Lead
 collaborators: UC San Diego · Statistical NLP
 tools: ['Python', 'LLMs', 'Retrieval + reranking', 'Transformers']
-businessProblem: A retrieval-augmented question-answering system that turns 230+ long-form documents into fast, reliable answers for decision-making.
+businessProblem: A retrieval-augmented question-answering system designed to turn 230+ long-form documents into grounded, source-traceable answers for decision-making.
 impactValue: '230+'
 impactLabel: 'documents indexed<br>reranked retrieval'
 impactPlaceholder: false
@@ -19,29 +19,34 @@ hasCaseStudy: true
 
 Knowledge trapped in long documents is knowledge nobody uses. I built an **LLM-powered
 question-answering system** over **230+ long-form, enterprise-style documents** so that answers —
-not just search hits — are a query away, speeding up the analytical and operational decisions that
-depend on them.
+not just search hits — are a query away. The design goal throughout was *grounding*: keeping each
+answer traceable to the passages it came from, so it can support an analytical or operational decision.
+
+> Evidence note: this project is a working system; I have not yet run a formal retrieval / answer-quality
+> evaluation. The claims below describe design intent, not benchmarked results — an evaluation harness
+> is the top item under "What I'd build next."
 
 ## The problem
 
 Keyword search returns documents; people need answers. For complex questions, naive retrieval
 surfaces loosely-related passages and the LLM confidently summarizes the wrong thing. The decision
-this supports: *get a reliable, grounded answer fast, without reading 230 documents.*
+this supports: *get a grounded answer fast, without reading 230 documents.*
 
 ## Approach
 
 - **Retrieval + reranking.** A two-step pipeline retrieves candidate passages, then reranks them for
-  relevance — so the model reasons over the *right* context, which is what makes downstream summaries
-  trustworthy.
+  relevance — so the model reasons over the *right* context, which is what a downstream summary
+  depends on.
 - **Transformer-based extraction.** Workflows that convert unstructured documents into structured
   inputs for question-answering and cross-functional reuse.
-- **Grounded answering.** Answers are built on reranked, relevant context to reduce hallucination and
-  improve reliability.
+- **Grounded answering.** Answers are built on reranked, relevant context, with the aim of reducing
+  hallucination and keeping each answer tied to its source passages.
 
 ## Why it matters
 
-The reranking step is the difference between a demo and a tool: it's what makes the answers reliable
-enough to inform a real decision rather than just look plausible.
+The reranking step is what separates a demo from a usable tool: it aims to keep the model grounded in
+the passages that actually answer the question, rather than whatever merely looks plausible. Proving
+that rigorously is the point of the evaluation work below.
 
 ## What I'd build next
 
