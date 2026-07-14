@@ -1,0 +1,36 @@
+---
+// Wraps a diagram/figure with an optional caption and an "Illustrative" badge,
+// so schematic diagrams are never mistaken for real result charts.
+interface Props {
+  caption?: string;
+  illustrative?: boolean;
+}
+const { caption, illustrative = true } = Astro.props;
+---
+<figure class="fig">
+  <div class="fig-frame"><slot /></div>
+  {caption && (
+    <figcaption>
+      {illustrative && <span class="ill">Illustrative</span>}
+      <span>{caption}</span>
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .fig { margin: 30px 0; }
+  .fig-frame {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 22px 20px; overflow-x: auto;
+  }
+  .fig-frame :global(svg) { width: 100%; height: auto; display: block; min-width: 560px; }
+  figcaption {
+    margin-top: 11px; font-family: var(--mono); font-size: 12px; color: var(--mut);
+    line-height: 1.55; display: flex; align-items: baseline; gap: 9px;
+  }
+  .ill {
+    color: var(--amber); border: 1px dashed var(--amber); border-radius: 5px;
+    padding: 1px 7px; font-size: 10px; letter-spacing: .09em; text-transform: uppercase;
+    flex: none; position: relative; top: -1px;
+  }
+</style>

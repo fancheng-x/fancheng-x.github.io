@@ -1,0 +1,67 @@
+---
+// A horizontal, theme-aware process diagram: a row of labelled nodes joined by
+// arrows. Long content overflows into a horizontal scroll via <Figure>.
+import Figure from './Figure.astro';
+
+interface Step {
+  label: string;
+  sub?: string;
+  tone?: 'default' | 'accent' | 'amber';
+}
+interface Props {
+  steps: Step[];
+  caption?: string;
+  illustrative?: boolean;
+  ariaLabel?: string;
+}
+const { steps, caption, illustrative = true, ariaLabel = 'Process diagram' } = Astro.props;
+
+const W = 152, H = 62, GAP = 30, PAD = 5, Y = 8;
+const pitch = W + GAP;
+const width = steps.length * pitch - GAP + PAD * 2;
+const height = H + Y * 2;
+
+const fill = { default: 'var(--surface)', accent: 'var(--accent-tint)', amber: 'var(--surface)' };
+const stroke = { default: 'var(--line-2)', accent: 'var(--accent)', amber: 'var(--amber)' };
+---
+<Figure caption={caption} illustrative={illustrative}>
+  <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={ariaLabel}>
+    <defs>
+      <marker id="pipe-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"></path>
+      </marker>
+    </defs>
+    {steps.map((s, i) => {
+      const x = PAD + i * pitch;
+      const tone = s.tone ?? 'default';
+      return (
+        <Fragment>
+          {i < steps.length - 1 && (
+            <line
+              x1={x + W} y1={Y + H / 2} x2={x + W + GAP - 1} y2={Y + H / 2}
+              stroke="var(--accent)" stroke-width="1.5" marker-end="url(#pipe-arrow)"
+            ></line>
+          )}
+          <rect
+            x={x} y={Y} width={W} height={H} rx="10"
+            fill={fill[tone]} stroke={stroke[tone]}
+            stroke-width={tone === 'default' ? 1 : 1.7}
+            stroke-dasharray={tone === 'amber' ? '5 3' : undefined}
+          ></rect>
+          <text
+            x={x + W / 2} y={s.sub ? Y + H / 2 - 3 : Y + H / 2 + 5}
+            text-anchor="middle" font-family="var(--sans)" font-size="13" font-weight="560"
+            fill="var(--ink)"
+          >{s.label}</text>
+          {s.sub && (
+            <text
+              x={x + W / 2} y={Y + H / 2 + 15}
+              text-anchor="middle" font-family="var(--mono)" font-size="10.5"
+              fill="var(--mut)"
+            >{s.sub}</text>
+          )}
+        </Fragment>
+      );
+    })}
+  </svg>
+</Figure>
