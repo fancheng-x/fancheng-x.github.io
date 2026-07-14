@@ -1,0 +1,67 @@
+---
+title: An AI career CRM that runs my job search
+subtitle: Python · Notion API · LLM parsing · workflow automation
+year: '2026'
+categories: ['ai', 'product']
+role: Solo — product, design & build
+tools: ['Python', 'Notion API', 'LLM parsing', 'Clipboard automation']
+businessProblem: Tracking a job search across dozens of postings is tedious and error-prone — so I built a tool that turns a copied job posting into a structured, logged application record in one step.
+impactValue: '1-click'
+impactLabel: 'job posting →<br>structured record'
+impactPlaceholder: false
+featured: false
+order: 3
+repositoryUrl: https://github.com/
+hasCaseStudy: true
+---
+
+## Executive summary
+
+A serious job search is an operations problem: dozens of postings, each with a role, comp, location,
+requirements, and a deadline, all of which you need to track and prioritize. Manually copying that
+into a tracker is slow and gets skipped exactly when you're busiest. I built a small **AI-enabled CRM**
+that captures a job posting from the clipboard, uses an LLM to parse it into structured fields, and
+writes a clean record into a Notion pipeline — turning a five-minute chore into one action. It's a
+self-directed project, so it's also where I get to be my own product manager, designer, and engineer.
+
+## The problem
+
+Off-the-shelf job trackers make *you* do the data entry: retype the title, paste the description,
+tag the stage, set a reminder. The friction means records go stale, and a stale pipeline is useless
+for prioritizing. I wanted the opposite: capture should be effortless, and the structure should be
+good enough to actually sort and filter on.
+
+## My role
+
+Everything — I framed what the tool needed to do, designed the data model, and built it. The
+interesting decisions were product decisions, not just code: *what fields matter for prioritizing,
+and how little input can I get away with asking for?*
+
+## How it works
+
+- **Capture.** Copy a job posting; a Python script reads it straight from the clipboard — no forms.
+- **Parse.** An LLM extracts structured fields (role, company, location, comp, key requirements,
+  deadline) from messy, inconsistent posting text.
+- **Log.** The structured record is written to a Notion database via the API, chunked to respect
+  Notion's field limits, and stamped into a pipeline view I can sort and filter.
+
+## Design decisions
+
+- **Structured over raw.** Storing parsed fields — not just the pasted blob — is what makes the
+  pipeline sortable by deadline, comp, or fit.
+- **Minimal input.** The whole point is to remove friction; anything that requires typing is a
+  place the workflow will break down.
+- **Notion as the surface.** Reusing a tool I already live in beats building yet another UI to check.
+
+## Why it matters
+
+This is the smallest possible version of the thing I like doing professionally: **spotting a
+repetitive, ambiguous workflow, modeling the data behind it, and using automation and AI to remove
+the friction.** It's a genuine demonstration of product-and-operations thinking applied to a real,
+if personal, problem.
+
+## What I'd build next
+
+- A browser extension so capture works on any posting without leaving the page.
+- LLM-scored fit against my résumé, to auto-prioritize the pipeline.
+- Follow-up reminders and stage automation so the CRM nudges *me*.

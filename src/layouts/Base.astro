@@ -1,0 +1,61 @@
+---
+// Site-wide shell: <head>, fonts, nav, footer, theme toggle.
+import '@fontsource-variable/newsreader';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { href } from '../utils/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'Fancheng (Valeria) Xia — Product & Operations Analytics',
+  description = 'MS Business Analytics candidate at UC San Diego working at the intersection of analytics, product, operations, and AI-enabled workflows. I turn ambiguous business problems into measurable decisions.',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href={href('/favicon.svg')} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="generator" content={Astro.generator} />
+    <!-- Open Graph / social preview -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- set theme before paint to avoid flash -->
+    <script is:inline>
+      const t = localStorage.getItem('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <style>
+      .skip {
+        position: absolute; left: -999px; top: 8px; z-index: 100;
+        background: var(--accent); color: #fff; padding: 8px 14px; border-radius: 8px;
+      }
+      .skip:focus { left: 8px; }
+    </style>
+  </body>
+</html>

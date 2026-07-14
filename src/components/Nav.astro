@@ -1,0 +1,78 @@
+---
+import { href, isActive } from '../utils/url';
+const path = Astro.url.pathname;
+const is = (p: string) => isActive(path, p);
+---
+<nav>
+  <div class="nav-in shell">
+    <a class="logo" href={href('/')}>Fancheng <span class="alias">(Valeria)</span> Xia<span class="dot">.</span></a>
+    <div class="nav-links">
+      <a href={href('/')} class:list={[{ on: is('/') }]}>Home</a>
+      <a href={href('/work')} class:list={[{ on: is('/work') }]}>Work</a>
+      <a href={href('/about')} class:list={[{ on: is('/about') }]}>About</a>
+      <a href={href('/resume.pdf')} target="_blank" rel="noopener" class="res">Résumé<span aria-hidden="true"> ↓</span></a>
+    </div>
+    <button id="theme-toggle" class="theme-btn" aria-label="Toggle color theme" title="Toggle light / dark theme">
+      <span class="ico-sun" aria-hidden="true">☀</span><span class="ico-moon" aria-hidden="true">☾</span>
+    </button>
+  </div>
+</nav>
+
+<style>
+  nav {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-in { display: flex; align-items: center; gap: 20px; padding-top: 18px; padding-bottom: 18px; }
+  .logo { font-weight: 600; letter-spacing: -.01em; font-size: 17px; margin-right: auto; }
+  .logo .alias { color: var(--mut); font-weight: 500; }
+  .logo .dot { color: var(--accent); }
+
+  .nav-links { display: flex; align-items: center; gap: 30px; font-size: 15.5px; color: var(--mut); }
+  .nav-links a { position: relative; padding: 4px 0; transition: color .15s; }
+  .nav-links a:hover { color: var(--ink); }
+  /* active underline */
+  .nav-links a.on { color: var(--ink); font-weight: 500; }
+  .nav-links a.on::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -2px;
+    height: 2px; background: var(--accent); border-radius: 2px;
+  }
+  .nav-links .res { color: var(--accent); font-weight: 500; }
+  .nav-links .res:hover { color: var(--accent-deep); }
+
+  .theme-btn {
+    background: transparent; border: 1px solid var(--line-2); border-radius: 9px;
+    width: 40px; height: 40px; cursor: pointer; color: var(--ink); font-size: 17px;
+    display: grid; place-items: center; transition: border-color .15s, background .15s; flex: none;
+  }
+  .theme-btn:hover { border-color: var(--accent); background: var(--accent-tint); }
+  .ico-moon { display: none; }
+  :global(:root[data-theme='dark']) .ico-sun { display: none; }
+  :global(:root[data-theme='dark']) .ico-moon { display: inline; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .ico-sun { display: none; }
+    :global(:root:not([data-theme='light'])) .ico-moon { display: inline; }
+  }
+
+  @media (max-width: 680px) {
+    .nav-in { gap: 12px; flex-wrap: wrap; }
+    .logo { font-size: 16px; }
+    .nav-links { gap: 20px; font-size: 15px; order: 3; width: 100%; }
+    .theme-btn { width: 36px; height: 36px; }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  btn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const current =
+      root.getAttribute('data-theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>

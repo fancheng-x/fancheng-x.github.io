@@ -1,0 +1,66 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const filters = [
+  { f: 'all', label: 'All' },
+  { f: 'product', label: 'Product' },
+  { f: 'operations', label: 'Operations' },
+  { f: 'simulation', label: 'Simulation' },
+  { f: 'ai', label: 'AI Workflows' },
+];
+---
+<Base title="Selected Work — Fancheng (Valeria) Xia" description="Analytics, operations, simulation, and AI-workflow projects — each framed around the business decision it supports.">
+  <div class="shell">
+    <header class="page-head">
+      <p class="eyebrow">Selected Work</p>
+      <h1 class="display page-title">Business problems, structured and solved.</h1>
+      <p class="sec-intro">
+        Each project begins with a decision someone needed to make. Titles describe the problem;
+        the methods live inside. Filter by the kind of work.
+      </p>
+      <div class="filters" role="group" aria-label="Filter projects">
+        {filters.map((f, i) => (
+          <button class:list={['fbtn', { on: i === 0 }]} data-f={f.f}>{f.label}</button>
+        ))}
+      </div>
+    </header>
+
+    <section class="work">
+      {projects.map((p) => <ProjectCard project={p} />)}
+    </section>
+  </div>
+</Base>
+
+<style>
+  .page-head { padding: 70px 0 14px; }
+  .page-title { font-size: clamp(30px, 4.4vw, 46px); margin-bottom: 18px; }
+  .filters { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 40px; }
+  .fbtn {
+    font-size: 13px; font-family: var(--mono); border: 1px solid var(--line-2); background: transparent;
+    color: var(--mut); padding: 7px 14px; border-radius: 20px; cursor: pointer; transition: .15s;
+  }
+  .fbtn:hover { border-color: var(--ink); color: var(--ink); }
+  .fbtn.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .work { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding-bottom: 20px; }
+  @media (max-width: 800px) { .work { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('.fbtn')];
+  const projs = [...document.querySelectorAll<HTMLElement>('.proj')];
+  btns.forEach((b) =>
+    b.addEventListener('click', () => {
+      btns.forEach((x) => x.classList.toggle('on', x === b));
+      const f = b.dataset.f;
+      projs.forEach((p) => {
+        const show = f === 'all' || (p.dataset.cat || '').includes(f!);
+        p.style.display = show ? '' : 'none';
+      });
+    })
+  );
+</script>

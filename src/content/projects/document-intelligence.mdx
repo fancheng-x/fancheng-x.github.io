@@ -1,0 +1,49 @@
+---
+title: Making 230+ enterprise documents instantly answerable
+subtitle: LLM QA · retrieval + reranking · transformers
+year: '2026'
+categories: ['ai']
+role: Project Lead
+collaborators: UC San Diego · Statistical NLP
+tools: ['Python', 'LLMs', 'Retrieval + reranking', 'Transformers']
+businessProblem: A retrieval-augmented question-answering system that turns 230+ long-form documents into fast, reliable answers for decision-making.
+impactValue: '230+'
+impactLabel: 'documents indexed<br>reranked retrieval'
+impactPlaceholder: false
+featured: false
+order: 5
+hasCaseStudy: true
+---
+
+## Executive summary
+
+Knowledge trapped in long documents is knowledge nobody uses. I built an **LLM-powered
+question-answering system** over **230+ long-form, enterprise-style documents** so that answers —
+not just search hits — are a query away, speeding up the analytical and operational decisions that
+depend on them.
+
+## The problem
+
+Keyword search returns documents; people need answers. For complex questions, naive retrieval
+surfaces loosely-related passages and the LLM confidently summarizes the wrong thing. The decision
+this supports: *get a reliable, grounded answer fast, without reading 230 documents.*
+
+## Approach
+
+- **Retrieval + reranking.** A two-step pipeline retrieves candidate passages, then reranks them for
+  relevance — so the model reasons over the *right* context, which is what makes downstream summaries
+  trustworthy.
+- **Transformer-based extraction.** Workflows that convert unstructured documents into structured
+  inputs for question-answering and cross-functional reuse.
+- **Grounded answering.** Answers are built on reranked, relevant context to reduce hallucination and
+  improve reliability.
+
+## Why it matters
+
+The reranking step is the difference between a demo and a tool: it's what makes the answers reliable
+enough to inform a real decision rather than just look plausible.
+
+## What I'd build next
+
+- Evaluation harness scoring answer faithfulness against source passages.
+- Confidence signals and citations surfaced alongside every answer.

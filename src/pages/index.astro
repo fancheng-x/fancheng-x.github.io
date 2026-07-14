@@ -1,0 +1,172 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import profile from '../assets/profile.jpg';
+import { href } from '../utils/url';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const featured = projects.find((p) => p.data.featured);
+const rest = projects.filter((p) => p !== featured).slice(0, 4);
+
+const capabilities = [
+  { h: 'Frame the problem', p: 'Turn an ambiguous business question into a structured, decision-relevant analysis.' },
+  { h: 'Model the system', p: 'Simulation, optimization, and ML to capture how operations and users actually behave.' },
+  { h: 'Find the lever', p: 'Diagnose bottlenecks and define the metrics that separate signal from noise.' },
+  { h: 'Drive the decision', p: 'Translate results into recommendations senior and technical stakeholders can act on.' },
+];
+
+const skills = [
+  { h: 'Analytics & Measurement', accent: true, items: ['SQL', 'Python', 'KPI design', 'Funnel analysis', 'Segmentation', 'A/B testing', 'Tableau · Plotly'] },
+  { h: 'Operations & Decision Science', accent: false, items: ['Simulation', 'Optimization', 'Scenario analysis', 'Bottleneck analysis', 'Capacity planning', 'Process modeling'] },
+  { h: 'Product & Business', accent: true, items: ['Product analytics', 'Problem framing', 'Stakeholder comms', 'Executive storytelling', 'Requirements clarification'] },
+  { h: 'Data & AI Workflows', accent: false, items: ['LLMs · RAG', 'Prompt engineering', 'APIs · automation', 'Snowflake', 'Data pipelines', 'GitHub'] },
+];
+---
+<Base>
+  <div class="shell">
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-text">
+        <div class="avail">Open to full-time roles · Dec 2026</div>
+        <h1 class="display hero-h">
+          Turning complex operational and product questions into
+          <span class="u">measurable decisions.</span>
+        </h1>
+        <p class="lede">
+          I'm an MS Business Analytics candidate at UC San Diego working at the intersection of
+          <b>analytics, product thinking, operations, and AI-enabled workflows</b>. I structure ambiguous
+          problems, model the systems behind them, and turn the analysis into recommendations teams can act on.
+        </p>
+        <div class="cta-row">
+          <a class="btn pri" href={href('/work')}>View selected work</a>
+          <a class="btn sec" href={href('/resume.pdf')} target="_blank" rel="noopener">Download résumé</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <Image src={profile} alt="Fancheng (Valeria) Xia" widths={[320, 480, 640]} sizes="(max-width: 800px) 260px, 340px" loading="eager" />
+      </div>
+      <div class="strip">
+        <span><b>Product Analytics</b></span><span class="sep">/</span>
+        <span><b>Operations Analytics</b></span><span class="sep">/</span>
+        <span><b>Simulation &amp; Optimization</b></span><span class="sep">/</span>
+        <span><b>AI-enabled Workflows</b></span>
+      </div>
+    </header>
+
+    <!-- CAPABILITIES -->
+    <section class="section">
+      <p class="eyebrow">How I work</p>
+      <h2 class="sec-title">Not just analysis — decisions, systems, and impact.</h2>
+      <div class="cap-grid">
+        {capabilities.map((c) => (
+          <div class="cap"><h4>{c.h}</h4><p>{c.p}</p></div>
+        ))}
+      </div>
+    </section>
+
+    <!-- SELECTED WORK -->
+    <section class="section" id="work">
+      <p class="eyebrow">Selected Work</p>
+      <h2 class="sec-title">Business problems, structured and solved.</h2>
+      <p class="sec-intro">
+        Each project starts from a decision someone needed to make. Titles describe the problem;
+        the methods live inside.
+      </p>
+      <div class="work">
+        {featured && <ProjectCard project={featured} featured />}
+        {rest.map((p) => <ProjectCard project={p} />)}
+      </div>
+      <div class="work-more">
+        <a class="btn sec" href={href('/work')}>See all projects →</a>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="section">
+      <p class="eyebrow">Skills &amp; Tools</p>
+      <h2 class="sec-title">Organized by what I can do — not a language list.</h2>
+      <div class="skills-grid">
+        {skills.map((s) => (
+          <div class="skcell">
+            <h4 class:list={[{ accent: s.accent }]}>{s.h}</h4>
+            <div class="items">{s.items.map((i) => <span class="sk">{i}</span>)}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .hero {
+    padding: 76px 0 20px;
+    display: grid; grid-template-columns: 1.5fr 0.82fr; gap: 52px; align-items: center;
+  }
+  .hero-text { min-width: 0; }
+  .hero-photo { position: relative; justify-self: end; width: 100%; max-width: 340px; }
+  /* offset accent frame behind the portrait */
+  .hero-photo::before {
+    content: ""; position: absolute; inset: 0;
+    transform: translate(14px, 14px); border-radius: 16px;
+    border: 1.5px solid var(--accent); opacity: .5; z-index: 0;
+  }
+  .hero-photo :global(img) {
+    position: relative; z-index: 1; width: 100%; height: auto; aspect-ratio: 4 / 5;
+    object-fit: cover; object-position: center 20%;
+    border-radius: 16px; border: 1px solid var(--line); box-shadow: var(--shadow);
+  }
+  .avail {
+    display: inline-flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--mut);
+    font-family: var(--mono); letter-spacing: .03em; margin-bottom: 26px;
+  }
+  .avail::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-tint);
+  }
+  .hero-h { font-size: clamp(33px, 5vw, 55px); margin-bottom: 24px; max-width: 20ch; }
+  .hero-h .u { background: linear-gradient(transparent 62%, var(--accent-tint) 62%); padding: 0 2px; }
+  .lede { font-size: 19px; line-height: 1.6; color: var(--ink-2); max-width: 60ch; margin-bottom: 32px; }
+  .lede b { font-weight: 600; color: var(--ink); }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  .strip {
+    grid-column: 1 / -1;
+    display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 40px; padding-top: 22px;
+    border-top: 1px solid var(--line); font-family: var(--mono); font-size: 13px; color: var(--mut);
+  }
+  .strip .sep { color: var(--line-2); }
+  .strip b { color: var(--ink); font-weight: 500; }
+
+  .cap-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .cap { border-top: 2px solid var(--ink); padding-top: 16px; }
+  .cap h4 { font-size: 15px; margin-bottom: 7px; font-weight: 600; letter-spacing: -.01em; }
+  .cap p { font-size: 13.5px; color: var(--mut); line-height: 1.55; }
+
+  .work { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .work-more { margin-top: 26px; }
+
+  .skills-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  }
+  .skcell { background: var(--surface); padding: 24px; }
+  .skcell h4 {
+    font-size: 12px; font-family: var(--mono); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--mut); margin-bottom: 14px; font-weight: 500;
+  }
+  .skcell h4.accent { color: var(--accent); }
+  .skcell .items { display: flex; flex-wrap: wrap; gap: 8px; }
+  .sk { font-size: 13.5px; color: var(--ink); border: 1px solid var(--line-2); border-radius: 7px; padding: 6px 11px; }
+
+  @media (max-width: 800px) {
+    .hero { grid-template-columns: 1fr; gap: 34px; padding-top: 56px; }
+    .hero-photo { order: -1; justify-self: start; max-width: 220px; }
+    .hero-photo :global(img) { aspect-ratio: 1 / 1; }
+    .cap-grid { grid-template-columns: 1fr 1fr; }
+    .work, .skills-grid { grid-template-columns: 1fr; }
+  }
+</style>

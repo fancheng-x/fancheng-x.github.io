@@ -1,0 +1,88 @@
+---
+title: Forecasting rating drops to protect marketplace quality
+subtitle: Random Forest · SHAP · LLM complaint mining · 100k+ reviews
+year: '2025'
+categories: ['product']
+role: Project Lead
+collaborators: Team of 4 · UC San Diego
+tools: ['Python', 'Random Forest', 'SHAP', 'Llama 3.2 (Ollama)', 'Feature engineering']
+businessProblem: On a review marketplace, a restaurant's rating can slide before anyone notices — this system flags the risk early and explains why, so operators can act.
+impactValue: '5,393'
+impactLabel: 'venues monitored<br>AUC 0.75 · Recall 0.66'
+impactPlaceholder: false
+featured: false
+order: 2
+hasCaseStudy: true
+---
+
+## Executive summary
+
+On a two-sided review marketplace, rating is the product. When a venue's rating starts to slide,
+the platform loses trust and the operator loses demand — but by the time the average moves, the
+damage is done. I led a team building an **early-warning system** that forecasts a 7-day rating
+drop for individual restaurants and, just as importantly, explains the operational reasons behind
+the risk. It scores **5,393 restaurants** from **100,000+ reviews** with an AUC of **0.75** and
+recall of **0.66**, turning a lagging metric into a leading, actionable signal.
+
+## Business context
+
+A star rating is a slow-moving average — which makes it a terrible alarm. A venue can accumulate a
+week of angry reviews and still show four stars, so operators and the platform react only after the
+number visibly falls and recovery is expensive. The decision we wanted to support: *which venues are
+at risk right now, and what should someone do about it?*
+
+## The core decision
+
+- **Triage** — which restaurants are most likely to see a rating drop in the next 7 days?
+- **Root cause** — what's driving the risk (service, wait times, food quality, cleanliness)?
+- **Action** — what signal do we hand an operator or account manager so they can intervene before the rating moves?
+
+## My role
+
+I led problem framing, feature strategy, and the modeling approach, and owned how the output was
+framed as an operational signal rather than a raw probability. I coordinated the team across data
+prep, modeling, and the LLM-based complaint analysis.
+
+## Analytical approach
+
+- **Feature engineering (29 features).** Time-series signals (rating trajectory, review velocity),
+  behavioral signals (reviewer patterns), and **sentiment** extracted from review text.
+- **Modeling.** A Random Forest classifier tuned for recall on the imbalanced "drop" class —
+  because missing an at-risk venue is costlier than a false alarm.
+- **Explainability (SHAP).** Every prediction comes with the features driving it, so the signal is
+  interpretable, not a black box.
+- **LLM complaint classification.** Llama 3.2 (via Ollama) categorizes free-text complaints into
+  operational root causes — turning "what" (rating at risk) into "why" (e.g. slow service).
+
+## Key results
+
+<div class="metrics">
+  <div class="metric"><div class="n">0.75</div><div class="k">AUC on held-out data</div></div>
+  <div class="metric"><div class="n">0.66</div><div class="k">Recall on rating-drop class</div></div>
+  <div class="metric"><div class="n">5,393</div><div class="k">Restaurants scored</div></div>
+  <div class="metric"><div class="n">29</div><div class="k">Engineered features</div></div>
+</div>
+
+## Recommendation & solution
+
+The output is an operator-facing signal: a ranked risk list plus the SHAP-driven and LLM-classified
+reasons behind each flag, so intervention is targeted (fix the wait-time problem at *this* venue)
+rather than generic. It reframes rating from a scoreboard into an early-warning dashboard.
+
+## Business impact
+
+The system converts a **lagging metric into a leading one**. Instead of reacting after a rating
+falls, the platform and its operators get a prioritized, explained watchlist — protecting
+marketplace quality where it's most at risk.
+
+## Validation & limitations
+
+Metrics are reported on held-out data; recall was deliberately favored over precision given the
+asymmetric cost of a missed at-risk venue. The model reflects historical review behavior and would
+need periodic retraining as platform and user behavior shift.
+
+## What I'd do next
+
+- Calibrate the intervention threshold to a real operator's review capacity.
+- A/B test whether flagged-and-acted-on venues actually recover faster than a control group.
+- Extend root-cause classification into suggested next actions, not just categories.

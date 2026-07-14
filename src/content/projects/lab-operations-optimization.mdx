@@ -1,0 +1,135 @@
+---
+title: Optimizing capacity and routing across a global laboratory network
+subtitle: Two-stage optimization · Monte Carlo simulation · Python
+year: '2026'
+categories: ['operations', 'simulation']
+role: Technical Lead
+collaborators: MSBA Capstone team (4) · industry client sponsor
+tools: ['Python', 'Optimization (two-stage)', 'Monte Carlo', 'Scenario analysis', 'Stakeholder comms']
+businessProblem: A global multi-site lab network needed to decide where to route work, when capacity becomes critical, and how transfers affect backlog — under real demand uncertainty.
+impactValue: 'Executive decision-support framework'
+impactLabel: 'Validated on client<br>operating data'
+impactPlaceholder: false
+featured: true
+order: 1
+confidentialityNote: Covered by a strict NDA. The client's identity, all operating data, and specific quantitative results are withheld. This case study describes only the analytical approach and my role — the findings below are stated qualitatively by design.
+hasCaseStudy: true
+---
+
+## Executive summary
+
+A global laboratory network runs work across multiple processing sites, each with its own
+capacity, queue, and turnaround commitments. When demand shifts, leaders face a hard question:
+**where should work be routed, when does a site tip into critical backlog, and which transfers
+actually help versus just move the problem?** As technical lead, I designed a decision-support
+framework — a two-stage optimization paired with Monte Carlo simulation — that lets senior
+stakeholders test capacity, routing, and backlog scenarios before committing to them. The model
+was validated against confidential client operating data and its recommendations were presented to
+senior and executive stakeholders as an operational planning tool, not a one-off analysis.
+
+## Business context
+
+A multi-site service network is deceptively hard to reason about. Each site looks fine in
+isolation, but the network behaves as a coupled system: a spike at one site spills into transfers,
+transfers consume capacity elsewhere, and turnaround commitments are missed two steps away from
+the original bottleneck. Leaders were making capacity and routing calls on spreadsheets and
+intuition, with no way to see how a decision would ripple under uncertain demand.
+
+## The core decision
+
+The framework was built to support a specific set of recurring operational decisions:
+
+- **Routing** — where should incoming work be sent given current load and turnaround targets?
+- **Capacity thresholds** — at what utilization does a site cross from busy into critical backlog?
+- **Transfers** — how do inter-site transfers change backlog and turnaround, and when do they backfire?
+- **Prioritization** — which operational interventions give the most service-level improvement per unit of capacity?
+- **Robustness** — how do the recommended decisions change once demand uncertainty is modeled explicitly?
+
+## My role
+
+I owned the analytical architecture end to end: framing the problem into a solvable model,
+defining the two-stage formulation and simulation logic, coordinating the team's technical work,
+validating outputs against client data in a secure environment, and translating results into
+executive-ready recommendations. My focus was making a technically sophisticated model
+**legible and decision-relevant** to non-technical operating leaders.
+
+## Analytical framework
+
+The system has two layers that answer two different questions:
+
+- **Stage one — allocation & routing (optimization).** A two-stage optimization decides how to
+  allocate capacity and route work across sites subject to real operating constraints, balancing
+  throughput against turnaround commitments.
+- **Stage two — uncertainty (Monte Carlo simulation).** Demand and processing variability are
+  sampled across many scenarios so recommendations are evaluated on their *distribution* of
+  outcomes, not a single point estimate. A decision that looks optimal on average but fails badly
+  in the tail is surfaced, not hidden.
+
+The two layers together let a leader ask *"what if demand runs 15% hot at these two sites"* and see
+the routing, backlog, and service-level consequences before it happens.
+
+## Data & model inputs
+
+Modeled input categories (no confidential values shown):
+
+- Site-level processing capacity and stage structure
+- Historical and projected demand by site
+- Turnaround-time targets / service-level commitments
+- Transfer costs, lead times, and eligibility rules
+- Backlog carry-over and queue dynamics
+- Demand and processing-time variability
+
+## Key metrics the model tracks
+
+<div class="metrics">
+  <div class="metric"><div class="n">Throughput</div><div class="k">Completed volume by site & network</div></div>
+  <div class="metric"><div class="n">Utilization</div><div class="k">Load vs. effective capacity</div></div>
+  <div class="metric"><div class="n">Backlog</div><div class="k">Queue depth & carry-over</div></div>
+  <div class="metric"><div class="n">Turnaround</div><div class="k">Time-to-complete vs. target</div></div>
+  <div class="metric"><div class="n">Capacity gap</div><div class="k">Where demand outruns capacity</div></div>
+  <div class="metric"><div class="n">Service level</div><div class="k">% within commitment, incl. tail</div></div>
+</div>
+
+## Key findings
+
+*Specific figures are withheld under NDA; the findings below are described qualitatively.*
+
+- The recommended routing policy improved modeled on-time turnaround relative to the status-quo allocation.
+- Backlog concentrated at a small number of constrained sites — and adding capacity *there* relieved the whole network far more than spreading capacity evenly.
+- A clear utilization threshold emerged, beyond which service level degraded sharply rather than gradually — a useful planning line for "how hot is too hot."
+- Modeling demand uncertainty explicitly changed which interventions looked best: several decisions that were optimal on average proved fragile in the tail.
+
+## Recommendations
+
+Analysis was translated into a prioritized set of operational moves — which sites to shore up
+first, which transfer rules to change, and which scenarios warranted contingency planning —
+framed explicitly around the tradeoff between **speed, capacity, and service reliability** so leaders
+could choose with the tradeoffs visible.
+
+## Validation & limitations
+
+Model outputs were validated against confidential client operating data in a secure environment.
+As with any operational model, recommendations are conditional on the demand assumptions and the
+fidelity of transfer/queue rules; the Monte Carlo layer is included precisely so decisions are
+stress-tested against uncertainty rather than a single forecast.
+
+## Business impact
+
+The deliverable was not a number — it was **repeatable decision support**: a way for leaders to
+evaluate capacity, routing, and backlog scenarios and align on a plan before committing resources,
+with the tradeoffs made explicit and defensible.
+
+## What I learned
+
+- Modeling an interconnected operational system, where the bottleneck and the symptom are rarely
+  the same place.
+- Balancing model complexity against usability — a model executives won't use has no impact.
+- Translating optimization and simulation output into language an operating leader acts on.
+- Leading technical work across a team toward a single, coherent recommendation.
+
+## What I'd build next
+
+- Automated scenario configuration so leaders can self-serve "what-ifs".
+- An interactive decision dashboard over the simulation outputs.
+- Continuous model calibration as new operating data arrives.
+- An AI-assisted layer to answer operational questions against the model in plain language.

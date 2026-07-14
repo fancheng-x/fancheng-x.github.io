@@ -1,0 +1,55 @@
+---
+title: Catching identity fraud before it reaches review
+subtitle: LightGBM · feature engineering · 1M applications
+year: '2026'
+categories: ['risk', 'ai']
+role: Project Lead
+collaborators: UC San Diego · Fraud Analytics
+tools: ['Python', 'LightGBM', 'Feature engineering', 'Imbalanced learning']
+businessProblem: An identity-fraud model on one million financial applications, tuned to the real tradeoff between catching fraud and the cost of investigating false positives.
+impactValue: '$319M'
+impactLabel: 'est. annual savings<br>58.9% caught @ 3% review'
+impactPlaceholder: false
+featured: false
+order: 4
+hasCaseStudy: true
+---
+
+## Executive summary
+
+Fraud detection is a cost-tradeoff problem disguised as a modeling problem. Catch more fraud and you
+also flag more legitimate applicants for costly manual review. I built a **LightGBM** identity-fraud
+model on **1,000,000 financial-product applications** that makes that tradeoff explicit — and used it
+to recommend a review threshold, not just report an accuracy number.
+
+## The decision
+
+Not "is this application fraud?" but **"where do we set the review cutoff so that prevented losses
+outweigh investigation cost?"** — a business decision the model exists to inform.
+
+## Approach
+
+- Engineered **velocity, recency, and cross-linkage** features from identity attributes — the
+  signals that expose fraud rings and synthetic identities.
+- Trained a **LightGBM** classifier suited to a large, highly imbalanced dataset.
+- Evaluated on **out-of-time** data to reflect real deployment, where tomorrow's fraud doesn't look
+  exactly like yesterday's.
+- Framed performance as a **cost curve** across review thresholds rather than a single score.
+
+## Results
+
+<div class="metrics">
+  <div class="metric"><div class="n">58.9%</div><div class="k">Fraud caught at a 3% review threshold</div></div>
+  <div class="metric"><div class="n">$319M</div><div class="k">Est. annual net savings at the recommended 2% cutoff</div></div>
+  <div class="metric"><div class="n">1M</div><div class="k">Applications scored (out-of-time)</div></div>
+</div>
+
+## Why it matters
+
+The recommendation balanced prevention impact against false-positive investigation cost — the
+difference between a model that scores well and one an operations team can actually run.
+
+## Validation & limitations
+
+Evaluated on out-of-time data to avoid over-optimistic estimates. The savings figure is a modeled
+estimate under stated assumptions about loss and investigation cost, not a booked result.

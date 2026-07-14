@@ -1,0 +1,94 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { href as base } from '../utils/url';
+interface Props {
+  project: CollectionEntry<'projects'>;
+  featured?: boolean;
+}
+const { project, featured = false } = Astro.props;
+const d = project.data;
+const href = d.hasCaseStudy ? base(`/work/${project.id}`) : (d.projectUrl ?? '#');
+const catLabel: Record<string, string> = {
+  product: 'Product Analytics',
+  operations: 'Operations',
+  simulation: 'Simulation',
+  ai: 'AI Workflows',
+  risk: 'Risk Analytics',
+};
+---
+<a class:list={['proj', { feat: featured }]} href={href} data-cat={d.categories.join(' ')}>
+  <div class="body">
+    <div class="ptags">
+      {d.categories.map((c) => <span class="ptag">{catLabel[c]}</span>)}
+      {featured && <span class="ptag alt">{d.role}</span>}
+    </div>
+    <h3 class="ptitle">{d.title}</h3>
+    <p class="pmethod">{d.subtitle}</p>
+    <p class="pdesc">{d.businessProblem}</p>
+    <div class="impact">
+      <span class:list={['big', { ph: d.impactPlaceholder }]}>{d.impactValue}</span>
+      <span class="lbl" set:html={d.impactLabel}></span>
+    </div>
+  </div>
+  {featured && (
+    <div class="viz" aria-hidden="true">
+      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+        <g fill="none" stroke="var(--accent)" stroke-width="1.4" opacity=".55">
+          <path d="M80 90 L200 60 L320 100" /><path d="M80 90 L200 150 L320 100" />
+          <path d="M80 210 L200 150 L320 210" /><path d="M80 90 L200 150" />
+          <path d="M320 100 L200 150 L320 210" />
+        </g>
+        <g fill="var(--accent)">
+          <circle cx="80" cy="90" r="7" /><circle cx="80" cy="210" r="7" />
+          <circle cx="320" cy="100" r="7" /><circle cx="320" cy="210" r="7" />
+        </g>
+        <circle cx="200" cy="60" r="9" fill="var(--amber)" />
+        <circle cx="200" cy="150" r="11" fill="var(--accent-deep)" />
+      </svg>
+    </div>
+  )}
+</a>
+
+<style>
+  .proj {
+    grid-column: span 1; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 26px 26px 22px; display: flex; flex-direction: column;
+    gap: 14px; color: inherit;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+  }
+  .proj:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .proj .body { display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .proj.feat { grid-column: span 2; flex-direction: row; align-items: stretch; gap: 0; overflow: hidden; padding: 0; }
+  .proj.feat .body { padding: 30px 30px 26px; flex: 1.15; }
+  .proj.feat .viz {
+    flex: 1; background: linear-gradient(135deg, var(--accent-tint), var(--surface));
+    border-left: 1px solid var(--line); position: relative; min-height: 240px;
+  }
+  .proj.feat .viz svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ptags { display: flex; gap: 7px; flex-wrap: wrap; }
+  .ptag {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--accent-deep); background: var(--accent-tint); padding: 4px 9px; border-radius: 5px;
+  }
+  .ptag.alt { color: var(--mut); background: transparent; border: 1px solid var(--line-2); }
+  .ptitle { font-family: var(--serif); font-size: 20px; line-height: 1.2; font-weight: 500; transition: color .18s; }
+  .ptitle::after {
+    content: " ↗"; color: var(--accent); font-family: var(--sans); font-size: .8em;
+    opacity: 0; transition: opacity .18s;
+  }
+  .proj:hover .ptitle { color: var(--accent-deep); }
+  .proj:hover .ptitle::after { opacity: 1; }
+  .proj.feat .ptitle { font-size: 25px; max-width: 20ch; }
+  .proj.feat .viz { transition: background .3s ease; }
+  .proj.feat:hover .viz { background: linear-gradient(135deg, var(--accent-tint), var(--accent-tint)); }
+  .pmethod { font-family: var(--mono); font-size: 12px; color: var(--mut); }
+  .pdesc { font-size: 14px; color: var(--ink-2); line-height: 1.55; }
+  .impact { margin-top: auto; display: flex; align-items: baseline; gap: 10px; padding-top: 14px; border-top: 1px dashed var(--line-2); }
+  .impact .big { font-size: 22px; font-weight: 600; letter-spacing: -.02em; color: var(--ink); font-variant-numeric: tabular-nums; font-family: var(--sans); }
+  .impact .big.ph { color: var(--amber); font-family: var(--mono); font-size: 15px; }
+  .impact .lbl { font-size: 12.5px; color: var(--mut); line-height: 1.35; }
+  @media (max-width: 800px) {
+    .proj.feat { flex-direction: column; grid-column: span 1; }
+    .proj.feat .viz { border-left: none; border-top: 1px solid var(--line); min-height: 150px; }
+  }
+</style>
