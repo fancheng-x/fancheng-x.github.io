@@ -15,6 +15,8 @@ repositoryUrl: https://github.com/fancheng-x/career-crm-copilot
 hasCaseStudy: true
 ---
 
+import Pipeline from '../../components/Pipeline.astro';
+
 ## Executive summary
 
 A serious job search is an operations problem: dozens of postings, each with a role, comp, location,
@@ -45,6 +47,18 @@ and how little input can I get away with asking for?*
   deadline) from messy, inconsistent posting text.
 - **Log.** The structured record is written to a Notion database via the API, chunked to respect
   Notion's field limits, and stamped into a pipeline view I can sort and filter.
+
+<Pipeline
+  illustrative={false}
+  ariaLabel="Career CRM capture workflow"
+  caption="One action, four steps: a copied posting becomes a sortable, structured record — no forms, no retyping."
+  steps={[
+    { label: 'Copy JD', sub: 'clipboard' },
+    { label: 'LLM parse', sub: 'extract fields', tone: 'accent' },
+    { label: 'Structured record', sub: 'role · comp · deadline' },
+    { label: 'Notion pipeline', sub: 'sortable' },
+  ]}
+/>
 
 ## Design decisions
 

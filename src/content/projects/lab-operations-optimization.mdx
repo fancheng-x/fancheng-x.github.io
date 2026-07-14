@@ -16,6 +16,8 @@ confidentialityNote: Covered by a strict NDA. The client's identity, all operati
 hasCaseStudy: true
 ---
 
+import Pipeline from '../../components/Pipeline.astro';
+
 ## Executive summary
 
 A global laboratory network runs work across multiple processing sites, each with its own
@@ -34,6 +36,19 @@ isolation, but the network behaves as a coupled system: a spike at one site spil
 transfers consume capacity elsewhere, and turnaround commitments are missed two steps away from
 the original bottleneck. Leaders were making capacity and routing calls on spreadsheets and
 intuition, with no way to see how a decision would ripple under uncertain demand.
+
+<Pipeline
+  ariaLabel="System flow from demand to turnaround across sites"
+  caption="How work moves through the multi-site network. The queue/backlog stage is the coupling point — pressure there ripples into transfers and downstream turnaround."
+  steps={[
+    { label: 'Demand' },
+    { label: 'Site capacity' },
+    { label: 'Queue & backlog', sub: 'coupling point', tone: 'accent' },
+    { label: 'Processing' },
+    { label: 'Transfers' },
+    { label: 'Turnaround', sub: 'vs. SLA' },
+  ]}
+/>
 
 ## The core decision
 
@@ -67,6 +82,18 @@ The system has two layers that answer two different questions:
 
 The two layers together let a leader ask *"what if demand runs 15% hot at these two sites"* and see
 the routing, backlog, and service-level consequences before it happens.
+
+<Pipeline
+  ariaLabel="Analytical pipeline from inputs to recommendations"
+  caption="The two-layer approach: optimization decides allocation and routing; Monte Carlo stress-tests it against demand uncertainty before anything becomes a recommendation."
+  steps={[
+    { label: 'Inputs', sub: 'capacity · demand · SLAs' },
+    { label: 'Optimization', sub: 'two-stage', tone: 'accent' },
+    { label: 'Monte Carlo', sub: 'demand uncertainty', tone: 'accent' },
+    { label: 'KPI outputs', sub: 'backlog · turnaround' },
+    { label: 'Recommendations', sub: 'exec-ready' },
+  ]}
+/>
 
 ## Data & model inputs
 

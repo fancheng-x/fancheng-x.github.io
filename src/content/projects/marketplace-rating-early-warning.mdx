@@ -15,6 +15,8 @@ order: 2
 hasCaseStudy: true
 ---
 
+import Pipeline from '../../components/Pipeline.astro';
+
 ## Executive summary
 
 On a two-sided review marketplace, rating is the product. When a venue's rating starts to slide,
@@ -53,6 +55,20 @@ prep, modeling, and the LLM-based complaint analysis.
   interpretable, not a black box.
 - **LLM complaint classification.** Llama 3.2 (via Ollama) categorizes free-text complaints into
   operational root causes — turning "what" (rating at risk) into "why" (e.g. slow service).
+
+<Pipeline
+  ariaLabel="From reviews to operator intervention and validation"
+  caption="Raw reviews become a ranked, explained watchlist — then the loop closes with a planned A/B test of whether flagged-and-acted-on venues actually recover faster."
+  steps={[
+    { label: 'Reviews', sub: '100k+' },
+    { label: 'Features', sub: '29 signals' },
+    { label: 'Random Forest', sub: 'recall-tuned', tone: 'accent' },
+    { label: 'Risk ranking', sub: '7-day drop' },
+    { label: 'Root cause', sub: 'SHAP + LLM', tone: 'accent' },
+    { label: 'Intervention', sub: 'operator' },
+    { label: 'A/B test', sub: 'planned', tone: 'amber' },
+  ]}
+/>
 
 ## Key results
 
